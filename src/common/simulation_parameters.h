@@ -2,6 +2,7 @@
 #define RFDTD_CONTENTS_PARAMS_H_
 
 #include <time.h>
+#include <stdbool.h>
 #include "common_typedefs.h"
 #include "simulation_parameters_enums.h"
 
@@ -21,9 +22,35 @@ struct rfdtd_file_metadata {
 };
 
 struct rfdtd_scatterfield_params {
+    bool enabled;
+
+    rfdtd_index_t start_ix;
+    rfdtd_index_t start_iy;
+    rfdtd_index_t start_iz;
+    rfdtd_index_t stop_ix;
+    rfdtd_index_t stop_iy;
+    rfdtd_index_t stop_iz;
 };
 
 struct rfdtd_farfield_params {
+    bool enabled;
+
+    rfdtd_index_t start_ix;
+    rfdtd_index_t start_iy;
+    rfdtd_index_t start_iz;
+    rfdtd_index_t stop_ix;
+    rfdtd_index_t stop_iy;
+    rfdtd_index_t stop_iz;
+
+    struct rfdtd_farfield_probe_params *probes;
+};
+
+struct rfdtd_farfield_probe_params {
+    const char *name;
+    enum rfdtd_field_components components;
+    rfdtd_number_t x;
+    rfdtd_number_t y;
+    rfdtd_number_t z;
 };
 
 struct rfdtd_simulation_params {
@@ -48,10 +75,10 @@ struct rfdtd_simulation_params {
 struct rfdtd_axis_params {
     enum rfdtd_axis_type type;
 
-    rfdtd_real_t minimum;
-    rfdtd_real_t maximum;
-    rfdtd_real_t delta;
-    rfdtd_real_t ticks;
+    rfdtd_number_t minimum;
+    rfdtd_number_t maximum;
+    rfdtd_number_t delta;
+    rfdtd_number_t ticks;
     unsigned     ticks_count;
 };
 
@@ -62,27 +89,27 @@ struct rfdtd_boundary_params {
 
 struct rfdtd_material_params {
     enum rfdtd_material_type type;
-    rfdtd_real_t epsilon;
-    rfdtd_real_t mu;
-    rfdtd_real_t sigmaE;
-    rfdtd_real_t sigmaH;
+    rfdtd_number_t epsilon;
+    rfdtd_number_t mu;
+    rfdtd_number_t sigmaE;
+    rfdtd_number_t sigmaH;
 };
 
 struct rfdtd_probe_params {
     enum rfdtd_probe_type type;
-    rfdtd_real_t x;
-    rfdtd_real_t y;
-    rfdtd_real_t z;
-    rfdtd_real_t dx;
-    rfdtd_real_t dy;
-    rfdtd_real_t dz;
+    rfdtd_number_t x;
+    rfdtd_number_t y;
+    rfdtd_number_t z;
+    rfdtd_number_t dx;
+    rfdtd_number_t dy;
+    rfdtd_number_t dz;
 };
 
 struct rfdtd_lumped_params {
     enum rfdtd_probe_type type;
-    rfdtd_real_t x;
-    rfdtd_real_t y;
-    rfdtd_real_t z;
+    rfdtd_number_t x;
+    rfdtd_number_t y;
+    rfdtd_number_t z;
 };
 
 struct rfdtd_struct_params_patch {

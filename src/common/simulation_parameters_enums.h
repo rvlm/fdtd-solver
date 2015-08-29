@@ -18,6 +18,25 @@ enum rfdtd_direction_index {
     RFDTD_DIRECTIONS_COUNT = 6
 };
 
+enum rfdtd_field_components {
+    RFDTD_EX_COMPONENT = 0x0001,
+    RFDTD_EY_COMPONENT = 0x0002,
+    RFDTD_EZ_COMPONENT = 0x0004,
+    RFDTD_HX_COMPONENT = 0x0010,
+    RFDTD_HY_COMPONENT = 0x0020,
+    RFDTD_HZ_COMPONENT = 0x0040,
+
+    RFDTD_E_FIELD = RFDTD_EX_COMPONENT
+                  | RFDTD_EY_COMPONENT
+                  | RFDTD_EZ_COMPONENT,
+
+    RFDTD_H_FIELD = RFDTD_HX_COMPONENT
+                  | RFDTD_HY_COMPONENT
+                  | RFDTD_HZ_COMPONENT,
+
+    RFDTD_EH_FIELDS = RFDTD_E_FIELD | RFDTD_H_FIELD
+};
+
 enum rfdtd_axis_type {
     RFDTD_REGULAR_AXIS   = 0,
     RFDTD_IRREGULAR_AXIS = 1
