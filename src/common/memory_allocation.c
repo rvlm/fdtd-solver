@@ -11,6 +11,7 @@ rfdtd_memory_allocate(void *result, size_t size) {
     void *ptr = malloc(size);
 
     if (!ptr) {
+        *(void **)result = NULL;
 	error.code = RFDTD_ALLOC_ERROR;
 	error.msg  = "Unable to allocate memory";
 	error.file = __FILE__;
@@ -23,5 +24,6 @@ rfdtd_memory_allocate(void *result, size_t size) {
 }
 
 void rfdtd_memory_free(void *ptr) {
-    free(ptr);
+    free(*(void **)ptr);
+    *(void **)ptr = NULL;
 }

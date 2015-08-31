@@ -14,7 +14,7 @@
     rfdtd_memory_allocate(&(var), (num)*sizeof(*(var)))
 
 #define FREE(var) \
-    (rfdtd_memory_free(var), (var) = NULL)
+    rfdtd_memory_free(&(var))
 
 /* Error handling helpers. */
 
