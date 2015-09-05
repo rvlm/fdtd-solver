@@ -1,5 +1,5 @@
-#ifndef RFDTD_COMMON_HELPERS_IMPL_H_
-#define RFDTD_COMMON_HELPERS_IMPL_H_
+#ifndef RFDTD_COMMON_HELPERS_INTERNAL_H_
+#define RFDTD_COMMON_HELPERS_INTERNAL_H_
 
 #include <stdbool.h>
 #include "rvlm/fdtd/common/error_handling.h"
