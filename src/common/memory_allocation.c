@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "memory_allocation.h"
+#include "rvlm/fdtd/common/memory_allocation.h"
 
 /* HACK: Strictly speaking, argument 'result' should be 'void **', but it turned
          out that having it declared so issues the "passing incompatible pointer

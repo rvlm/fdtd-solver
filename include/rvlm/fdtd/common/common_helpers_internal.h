@@ -2,8 +2,8 @@
 #define RFDTD_COMMON_HELPERS_IMPL_H_
 
 #include <stdbool.h>
-#include "error_handling.h"
-#include "memory_allocation.h"
+#include "rvlm/fdtd/common/error_handling.h"
+#include "rvlm/fdtd/common/memory_allocation.h"
 
 /* Memory management helpers. */
 

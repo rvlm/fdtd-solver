@@ -1,6 +1,6 @@
 #include <hdf5.h>
-#include "common_helpers_internal.h"
-#include "simulation_parameters_reader.h"
+#include "rvlm/fdtd/common/common_helpers_internal.h"
+#include "rvlm/fdtd/common/simulation_parameters_reader.h"
 
 struct rfdtd_error_info
 rfdtd_read_hdf5_file(const char *filename,

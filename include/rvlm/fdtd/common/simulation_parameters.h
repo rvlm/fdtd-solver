@@ -3,8 +3,8 @@
 
 #include <time.h>
 #include <stdbool.h>
-#include "common_typedefs.h"
-#include "simulation_parameters_enums.h"
+#include "rvlm/fdtd/common/common_typedefs.h"
+#include "rvlm/fdtd/common/simulation_parameters_enums.h"
 
 struct rfdtd_axis_params;
 struct rfdtd_boundary_params;

@@ -2,6 +2,7 @@
 #define RFDTD_COMMON_TYPEDEFS_H_
 
 #include <stdint.h>
+#include "rvlm/fdtd/config.h"
 
 #if RFDTD_CONFIG_USE_DOUBLE
     typedef double rfdtd_number_t;
