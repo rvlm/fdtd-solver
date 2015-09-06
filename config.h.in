@@ -1,2 +1,2 @@
-#cmakedefine RFDTD_CONFIG_USE_DOUBLE
+#cmakedefine01 RFDTD_CONFIG_USE_DOUBLE
 
