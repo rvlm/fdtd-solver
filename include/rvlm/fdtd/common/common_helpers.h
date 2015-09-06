@@ -3,7 +3,7 @@
 
 char *rfdtd_copy_string(const char *src, char *dst, char* dst_end);
 /** Copies characters from `src` to `dst` to the boundary `dst_end`.
-    The lenght of destination buffer is `(dst_end - dst)`, and so function never
+    The lenght of destination buffer is `(dst_end - dst)`, so function never
     reaches `dst_end` pointer. The last character which can be affected has
     index `dst_end - 1`.
 
