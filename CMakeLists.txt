@@ -52,7 +52,7 @@ if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
         -Wswitch-default
         -Wundef
         -Wunreachable-code
-        -Wunsuffixed-float-constants
+        #-Wunsuffixed-float-constants
         -Wunused
         # -Wuseless-cast
         -Wwrite-strings
