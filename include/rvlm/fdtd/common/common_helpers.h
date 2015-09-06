@@ -16,4 +16,9 @@ char *rfdtd_copy_string(const char *src, char *dst, char* dst_end);
     properly. In this case nothing gets copied at all and `NULL` is returned as
     the result. */
 
+
+char* rfdtd_format(char *begin, char *end,
+                         const char *fmt, const char **args, int args_count);
+/** Privitive string formatter. */
+
 #endif
