@@ -2,6 +2,7 @@
 #include "rvlm/fdtd/common/common_helpers_internal.h"
 #include "rvlm/fdtd/common/simulation_parameters_reader.h"
 
+/*
 struct rfdtd_error_info
 rfdtd_read_hdf5_file(const char *filename,
 		     struct rfdtd_simulation_params **result) {
@@ -18,7 +19,6 @@ rfdtd_read_hdf5_file(const char *filename,
     if (file_id < 0)
 	goto failure;
 
-    /* To be continued. */
 
     H5Fclose(file_id);
 
@@ -30,6 +30,7 @@ failure:
     H5Fclose(file_id);
     return error;
 }
+*/
 
 void rfdtd_destroy_simulation_parameters(struct rfdtd_simulation_params* contents) {
 

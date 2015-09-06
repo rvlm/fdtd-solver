@@ -4,10 +4,9 @@
 #include <stddef.h>
 #include "rvlm/fdtd/common/error_handling.h"
 
-struct rfdtd_error_info
-rfdtd_memory_allocate(void *result, size_t size);
+void *rfdtd_memory_allocate(size_t size,
+			   struct rfdtd_error_stack* e);
 
-void
-rfdtd_memory_free(void *ptr);
+void rfdtd_memory_free(void *ptr);
 
 #endif

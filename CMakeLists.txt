@@ -98,6 +98,7 @@ if(RFDTD_CONFIG_UNIT_TESTS)
         "${B}/include/generated-tests.h"
         "${S}/generate-test-registry.py"
 	"${S}/test/common/test_common_helpers.c"
+	"${S}/test/common/test_error_handling.c"
         "${S}/test/main.c")
 
     # Gather all '*.c' files from 'rvlmfdtd-test' target into TEST_SOURCES. 
