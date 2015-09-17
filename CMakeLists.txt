@@ -75,14 +75,14 @@ include_directories(
 
 add_library(rvlmfdtd STATIC
     "${S}/include/rvlm/fdtd/common/common_helpers_internal.h"
-    "${S}/include/rvlm/fdtd/common/common_helpers.h"
+    "${S}/include/rvlm/fdtd/common/string_format.h"
     "${S}/include/rvlm/fdtd/common/common_typedefs.h"
     "${S}/include/rvlm/fdtd/common/error_handling.h"
     "${S}/include/rvlm/fdtd/common/memory_allocation.h"    
     "${S}/include/rvlm/fdtd/common/simulation_parameters_enums.h"
     "${S}/include/rvlm/fdtd/common/simulation_parameters_reader.h"
     "${S}/include/rvlm/fdtd/common/simulation_parameters.h"
-    "${S}/src/common/common_helpers.c"
+    "${S}/src/common/string_format.c"
     "${S}/src/common/error_handling.c"
     "${S}/src/common/memory_allocation.c"
     "${S}/src/common/simulation_parameters_reader.c"
@@ -97,9 +97,9 @@ if(RFDTD_CONFIG_UNIT_TESTS)
     add_executable(rvlmfdtd-test
         "${B}/include/generated-tests.h"
         "${S}/generate-test-registry.py"
-	"${S}/test/common/test_common_helpers.c"
-	"${S}/test/common/test_error_handling.c"
-        "${S}/test/main.c")
+	    "${S}/test/common/test_string_format.c"
+	    "${S}/test/common/test_error_handling.c"
+        "${S}/test/main_cunit.c")
 
     # Gather all '*.c' files from 'rvlmfdtd-test' target into TEST_SOURCES. 
     get_target_property(TEST_SOURCES_TMP rvlmfdtd-test SOURCES)

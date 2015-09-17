@@ -3,11 +3,12 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include "rvlm/fdtd/common/common_helpers.h"
+#include "rvlm/fdtd/common/string_format.h"
 #include "rvlm/fdtd/common/error_handling.h"
 
-static void clear_entry(struct rfdtd_error_info *entry);
-static void format_message(struct rfdtd_error_info *entry);
+static void clear_entry(struct rfdtd_error_info *entry) {
+    memset(entry, 0, sizeof(*entry));
+}
 
 void rfdtd_initialize_stack(struct rfdtd_error_stack *stack) {
     int i;
@@ -36,25 +37,6 @@ static struct rfdtd_error_info *shift_stack(struct rfdtd_error_stack *stack) {
 
     clear_entry(&stack->buf[tip]);
     return &stack->buf[tip];
-}
-
-static int count_args(const char *fmt) {
-    const char *cur;
-    char prev;
-    int count;
-
-    count = 0;
-    prev = '\0';
-    cur  = &fmt[0];
-    while (*cur != '\0') {
-        if (*cur == '{' && prev != '\\')
-            count++;
-
-        prev = *cur;
-        cur++;
-    }
-
-    return count;
 }
 
 bool rfdtd_push_error(struct rfdtd_error_stack *stack,
@@ -103,16 +85,15 @@ bool rfdtd_push_error(struct rfdtd_error_stack *stack,
         begin       = rfdtd_copy_string(fmt, begin, end);
     }
 
-    int argcount = count_args(fmt);
-    if (argcount > RFDTD_ERROR_MAX_ARGS)
-        argcount = RFDTD_ERROR_MAX_ARGS;
-
     va_start(vas, fmt);
     entry->args_count = 0;
     begin++;
-    for (i = 0; i<argcount; ++i) {
+    for (i = 0; i<RFDTD_ERROR_MAX_ARGS; ++i) {
         const char *argname = va_arg(vas, const char *);
         const char *argfmt  = NULL;
+
+        if (argname == NULL)
+            break;
 
         switch (argname[0]) {
             case 'i': argfmt = "%i";  break;
@@ -145,10 +126,4 @@ failure:
     entry->msg = begin;
     rfdtd_format(begin, end, entry->fmt, entry->args, entry->args_count);
     return false;
-}
-
-// static void rfdtd_format_error(struct rfdtd_error_info *error);
-
-static void clear_entry(struct rfdtd_error_info *entry) {
-    memset(entry, 0, sizeof(*entry));
 }

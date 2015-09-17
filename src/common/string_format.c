@@ -1,23 +1,14 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
-#include "rvlm/fdtd/common/common_helpers.h"
+#include "rvlm/fdtd/common/string_format.h"
 
-char *rfdtd_copy_string(const char *src, char *dst, char* dst_end) {
-    const char *s = src;
-    char *d = dst;
+char* rfdtd_format(char *begin, char *end, const char *fmt, ...) {
 
-    if (dst >= dst_end)
-	return NULL;
 
-    while (*s != '\0' && d < dst_end-1)
-	*(d++) = *(s++);
-
-    *d = '\0';
-    return d;
 }
 
-char *rfdtd_format(char *begin, char *end,
+char *rfdtd_substitute_placeholders(char *begin, char *end,
                   const char *fmt, const char **args, int args_count) {
     const char *src;
     char *dst;
@@ -67,4 +58,18 @@ char *rfdtd_format(char *begin, char *end,
 
     *dst = '\0';
     return dst;
+}
+
+char *rfdtd_copy_string(const char *src, char *dst, char* dst_end) {
+    const char *s = src;
+    char *d = dst;
+
+    if (dst >= dst_end)
+        return NULL;
+
+    while (*s != '\0' && d < dst_end-1)
+        *(d++) = *(s++);
+
+    *d = '\0';
+    return d;
 }

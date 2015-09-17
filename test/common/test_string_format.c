@@ -1,6 +1,6 @@
 #include <CUnit/CUnit.h>
 #include <stddef.h>
-#include "rvlm/fdtd/common/common_helpers.h"
+#include "rvlm/fdtd/common/string_format.h"
 
 extern void test_common_helpers_copy_string(void) {
     const size_t N = 128;

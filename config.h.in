@@ -1,2 +1,6 @@
-#cmakedefine01 RFDTD_CONFIG_USE_DOUBLE
+/*  rvlm/fdtd/config.h: compile time configuration file
+    ===================================================
+    This file is generated automatically, all manual changes will be lost on
+    regeneration. Edit 'config.h.in' instead. */
 
+#cmakedefine01 RFDTD_CONFIG_USE_DOUBLE

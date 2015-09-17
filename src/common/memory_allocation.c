@@ -5,13 +5,13 @@
 void *rfdtd_memory_allocate(size_t size, struct rfdtd_error_stack *stack) {
 
     void *ptr = malloc(size);
-    if (ptr != NULL) {
-	rfdtd_push_error(stack, __FILE__, __LINE__, "",
-	      RFDTD_ALLOC_ERROR, "Unable to allocate memory {sArg} {iArg}",
-	      "iArg", 1,
-	      "sArg", "string");
+    if (ptr == NULL) {
+        RAISE(RFDTD_ALLOC_ERROR,
+              "Unable to allocate {iSize} bytes of memory",
+              "iSize", size);
     }
 
+failure:
     return ptr;
 }
 

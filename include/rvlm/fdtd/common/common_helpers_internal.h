@@ -8,21 +8,32 @@
 /* Memory management helpers. */
 
 #define NEW(var) \
-    rfdtd_memory_allocate(&(var), sizeof(*(var)))
+    ALLOC((var), 1)
 
 #define ALLOC(var, num) \
-    rfdtd_memory_allocate(&(var), (num)*sizeof(*(var)))
+    ((var) = rfdtd_memory_allocate((num)*sizeof(*(var)), stack))
 
 #define FREE(var) \
     rfdtd_memory_free(&(var))
 
 /* Error handling helpers. */
 
-#define CHECK(expr) \
+#define TRY(expr) \
     do { ON_FAILURE(expr) goto failure; } while (false)
 
 #define ON_FAILURE(expr) \
-    if(!rfdtd_lift_error((expr), &error))
+    if((expr), rfdtd_okay(stack) || \
+       rfdtd_push_error(stack, __FILE__, __LINE__, #expr, ""))
+
+#define ON_FAILURE_M(expr, code, fmt, ...) \
+    if ((expr), rfdtd_okay(stack) ||       \
+                rfdtd_push_error(stack,    \
+                      __FILE__, __LINE__, #expr, code, fmt, __VA_ARGS__, NULL))
+
+#define ASSERT_M(expr, code, fmt, ...) \
+     ...
+
+#define RAISE(code, fmt, ...)
 
 /* Error handling helpers for memory management. */
 
@@ -31,15 +42,8 @@
 #define ON_NEW_FAILURE(var)        ON_FAILURE(NEW(var))
 #define ON_ALLOC_FAILURE(var, num) ON_FAILURE(ALLOC(var, num))
 
-static inline bool
-rfdtd_okay(const struct rfdtd_error_info error) {
-    return error.code == RFDTD_NO_ERROR;
-}
-
-static inline bool
-rfdtd_lift_error(const struct rfdtd_error_info  error,
-		       struct rfdtd_error_info *result) {
-    return rfdtd_okay(error) ? true : ((*result = error), false);
+static inline bool rfdtd_okay(const struct rfdtd_error_stack *stack) {
+    return stack->count == 0;
 }
 
 #endif

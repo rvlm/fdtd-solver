@@ -12,7 +12,8 @@ static int pseudo_sqrt(int x, struct rfdtd_error_stack *stack) {
     rfdtd_push_error(stack, __FILE__, __LINE__, "<NONE>",
 			 RFDTD_UNKNOWN_ERROR,
              "Root of negative value x={iArg}",
-             "iArg", x);
+             "iArg", x,
+              NULL);
     }
 
     return result;
