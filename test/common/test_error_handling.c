@@ -1,7 +1,6 @@
 #include <CUnit/CUnit.h>
-#include <stddef.h>
-#include <rvlm/fdtd/common/internal_macros.h>
 #include "rvlm/fdtd/common/error_handling.h"
+#include <rvlm/fdtd/common/internal_macros.h>
 
 static int pseudo_sqrt(int x, struct rfdtd_error_stack *e) {
     int result;
@@ -101,6 +100,26 @@ extern void test_error_handling_stack_works(void) {
     entry = rfdtd_get_stack_entry(&e, 0);
     CU_ASSERT_STRING_EQUAL(entry->file, __FILE__);
     CU_ASSERT_STRING_EQUAL(entry->expr, "<NONE>");
+    CU_ASSERT_STRING_EQUAL(entry->fmt,  "Root of negative value x={iArg}");
+    CU_ASSERT_STRING_EQUAL(entry->msg,  "Root of negative value x=-1");
+}
+
+extern void test_error_handling_stack_works_2(void) {
+    struct rfdtd_error_stack e;
+    struct rfdtd_error_entry *entry;
+    rfdtd_initialize_stack(&e);
+
+    CU_ASSERT_EQUAL(pseudo_sqrt_2( 1, &e), 1);
+    CU_ASSERT_EQUAL(e.tip,   0);
+    CU_ASSERT_EQUAL(e.count, 0);
+
+    CU_ASSERT_EQUAL(pseudo_sqrt_2(-1, &e), 0);
+    CU_ASSERT_EQUAL(e.tip,   1);
+    CU_ASSERT_EQUAL(e.count, 1);
+
+    entry = rfdtd_get_stack_entry(&e, 0);
+    CU_ASSERT_STRING_EQUAL(entry->file, __FILE__);
+    CU_ASSERT_STRING_EQUAL(entry->expr, "x >= 0");
     CU_ASSERT_STRING_EQUAL(entry->fmt,  "Root of negative value x={iArg}");
     CU_ASSERT_STRING_EQUAL(entry->msg,  "Root of negative value x=-1");
 }
