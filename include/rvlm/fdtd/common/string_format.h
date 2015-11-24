@@ -1,6 +1,8 @@
 #ifndef RFDTD_STRING_FORMAT_H_
 #define RFDTD_STRING_FORMAT_H_
 
+#include <stdarg.h>
+
 /** Lightweight string formatting
     =============================
 
@@ -62,6 +64,7 @@
 
     Note that `}` doesn't need to be escaped. */
 
+
 char* rfdtd_format(char *begin, char *end, const char *fmt, ...);
 /** Writes formatted string into memory. This function behaves similarly to
     standard `snprintf`, but has two major differences. First, target buffer is
@@ -89,10 +92,17 @@ char* rfdtd_format(char *begin, char *end, const char *fmt, ...);
 
 */
 
+char *rfdtd_format_placeholder(char *begin, char *end,
+                               const char *hldr_name, va_list va_args);
+
+char *rfdtd_format_placeholders(char *begin, char *end,
+                               char **args, int args_count, ...);
+
 char* rfdtd_substitute_placeholders(char *begin, char *end,
                          const char *fmt,
                          const char **args,
                          int args_count);
+
 /** Primitive string formatter. */
 
 char *rfdtd_copy_string(const char *src, char *dst, char* dst_end);

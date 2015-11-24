@@ -6,7 +6,7 @@
 #include "rvlm/fdtd/common/string_format.h"
 #include "rvlm/fdtd/common/error_handling.h"
 
-static void clear_entry(struct rfdtd_error_info *entry) {
+static void clear_entry(struct rfdtd_error_entry *entry) {
     memset(entry, 0, sizeof(*entry));
 }
 
@@ -19,32 +19,43 @@ void rfdtd_initialize_stack(struct rfdtd_error_stack *stack) {
         clear_entry(&stack->buf[i]);
 }
 
-struct rfdtd_error_info *rfdtd_get_stack_entry(
+struct rfdtd_error_entry *rfdtd_get_stack_entry(
                 struct rfdtd_error_stack *stack, int idx) {
     const int N = RFDTD_ERROR_STACK_CAPACITY;
-    return (idx == 0)
+    if (idx < 0 || idx >= stack->count)
+        return NULL;
+
+    // The index expression below is super pony magic, but it *does* work for
+    // various values of RFDTD_ERROR_STACK_CAPACITY.
+    // Tested with at least: 4, 5, 7, 9, and 912.
+    return (idx == stack->count - 1)
         ? &stack->buf[0]
-        : &stack->buf[(idx-1) % (N-1) + 1];
+        : &stack->buf[(stack->tip - idx - 3 + N) % (N-1) + 1];
 }
 
-static struct rfdtd_error_info *shift_stack(struct rfdtd_error_stack *stack) {
+static struct rfdtd_error_entry *shift_stack(struct rfdtd_error_stack *stack) {
     const int N = RFDTD_ERROR_STACK_CAPACITY;
-    int tip = stack->tip;
-    stack->tip++;
-    stack->count++;
-    if (stack->tip >= N-1)
+
+    int prev_tip = stack->tip;
+
+    ++stack->tip;
+    if (stack->tip == N)
         stack->tip = 1;
 
-    clear_entry(&stack->buf[tip]);
-    return &stack->buf[tip];
+    ++stack->count;
+    if (stack->count > N)
+        stack->count = N;
+
+    clear_entry(&stack->buf[prev_tip]);
+    return &stack->buf[prev_tip];
 }
 
-bool rfdtd_push_error(struct rfdtd_error_stack *stack,
+void rfdtd_push_error(struct rfdtd_error_stack *stack,
                       const char *file, int line,
-                      const char *expr, int code,
+                      const char *expr, enum rfdtd_error_code code,
                       const char *fmt, ...) {
 
-    struct rfdtd_error_info *entry;
+    struct rfdtd_error_entry *entry;
     va_list vas;
     char *begin;
     char *end;
@@ -53,7 +64,7 @@ bool rfdtd_push_error(struct rfdtd_error_stack *stack,
     ptrdiff_t size;
 
     if (stack == NULL)
-        return false;
+        return;
     
     entry = shift_stack(stack);
 
@@ -65,65 +76,28 @@ bool rfdtd_push_error(struct rfdtd_error_stack *stack,
     *(end-1) = '\0';
 
     entry->expr = end-1;
-    if (begin < end) {
+    if (begin < end && expr != NULL) {
         entry->expr = begin;
         begin       = rfdtd_copy_string(expr, begin, end);
     }
 
     begin++;
     entry->file = end-1;
-    if (begin < end) {
+    if (begin < end && file != NULL) {
         entry->file = begin;
         begin       = rfdtd_copy_string(file, begin, end);
     }
     
     begin++;
-    entry->msg = end-1;
     entry->fmt = end-1;
-    if (begin < end) {
+    if (begin < end && fmt != NULL) {
         entry->fmt  = begin;
         begin       = rfdtd_copy_string(fmt, begin, end);
     }
 
-    va_start(vas, fmt);
-    entry->args_count = 0;
     begin++;
-    for (i = 0; i<RFDTD_ERROR_MAX_ARGS; ++i) {
-        const char *argname = va_arg(vas, const char *);
-        const char *argfmt  = NULL;
+    entry->msg = end-1;
 
-        if (argname == NULL)
-            break;
-
-        switch (argname[0]) {
-            case 'i': argfmt = "%i";  break;
-            case 'f': argfmt = "%f";  break;
-            case 'd': argfmt = "%lf"; break;
-            case 's': argfmt = "%s";  break;
-            default:
-                // TODO: Issue warning here.
-            goto failure;
-        }
-
-        char *argbegin = begin;
-        begin = rfdtd_copy_string(argname, begin, end);
-        begin = rfdtd_copy_string("=", begin, end);
-
-        size = end - begin;
-        n = vsnprintf(begin, (size_t)size, argfmt, vas);
-
-        entry->args[i] = argbegin;
-        entry->args_count++;
-
-        if (n >= size)
-            n = size;
-
-        begin += n + 1;
-    }
-
-failure:
-    va_end(vas);
-    entry->msg = begin;
-    rfdtd_format(begin, end, entry->fmt, entry->args, entry->args_count);
-    return false;
+    // rfdtd_format(begin, end, entry->fmt, entry->args, entry->args_count);
+    return;
 }

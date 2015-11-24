@@ -14,18 +14,7 @@
 
     Here is an example of pushing an error event of the top of an error stack:
 
-        struct fdtd_error_info *error;
-
-        error = rfdtd_shift_error(&stack);
-        rfdtd_error_expr(error, NULL);
-        rfdtd_error_file(error, __FILE__, __LINE__);
-        rfdtd_error_fmt (error, "Unable to open file '{sFileName}', part {iPart}");
-        rfdtd_error_arg_string(error, "sFileName", file_name);
-        rfdtd_error_arg_integer(error, "iPart",    part);
-        rfdtd_format_error(error);
  */
-
-#include <stdbool.h>
 #include "rvlm/fdtd/common/common_typedefs.h"
 
 #define RFDTD_ERROR_MAX_ARGS 8
@@ -36,13 +25,17 @@
 
 enum rfdtd_error_code {
     RFDTD_UNKNOWN_ERROR,
-    RFDTD_ALLOC_ERROR,
+    RFDTD_ALLOCATION_ERROR,
+    RFDTD_ASSERTION_ERROR,
+    RFDTD_FILE_OPEN_ERROR,
 };
 
-struct rfdtd_error_info {
-    enum rfdtd_error_code code;
-    /** The error code acciated with the error situation. This code is 
+struct rfdtd_error_entry {
+    /**
      */
+
+    enum rfdtd_error_code code;
+    /** The error code associated with the error situation. */
 
     const char *msg;
     /** Message describing that happened to user. In general, this member is not
@@ -65,26 +58,41 @@ struct rfdtd_error_info {
     int line;
 
     char buf[RFDTD_ERROR_BUF_SIZE];
-    char *tip;
 };
 
 struct rfdtd_error_stack {
-    struct rfdtd_error_info buf[RFDTD_ERROR_STACK_CAPACITY];
+    struct rfdtd_error_entry buf[RFDTD_ERROR_STACK_CAPACITY];
     int tip;
     int count;
-    int total;
 };
 
 void rfdtd_initialize_stack(struct rfdtd_error_stack *stack);
+/** Initializes error stack. This function must be called once on top of the
+    function call hierarchy, probably, in :func:`main`:
 
-int rfdtd_get_stack_count(struct rfdtd_error_stack *stack);
+    .. code-block:: c
 
-struct rfdtd_error_info *rfdtd_get_stack_entry(
-			    struct rfdtd_error_stack *stack, int idx);
+        int main() {
+            struct rfdtd_error_stack stack;
+            struct rfdtd_error_stack *e = &stack;
+            rfdtd_initialize_stack(e);
 
-bool rfdtd_push_error(struct rfdtd_error_stack *stack,
-		      const char *file, int line,
-		      const char *expr, int code,
-                      const char *fmt, ...);
+            ...
+        }
+
+    Two notes:
+    * You shouldn't have nested call hierarchies, but they're possible.
+    * You should consistently name your error stack pointers as `e` if you want
+      to use helpers from :hdr:`internal_macros.h`. */
+
+struct rfdtd_error_entry *rfdtd_get_stack_entry(
+        struct rfdtd_error_stack *e, int idx);
+
+void rfdtd_push_error(
+        struct rfdtd_error_stack *stack,
+		const char *file, int line,
+		const char *expr,
+        enum rfdtd_error_code code,
+        const char *fmt, ...);
 
 #endif

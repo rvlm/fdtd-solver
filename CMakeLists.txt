@@ -74,7 +74,7 @@ include_directories(
     "${B}/include")
 
 add_library(rvlmfdtd STATIC
-    "${S}/include/rvlm/fdtd/common/common_helpers_internal.h"
+    "${S}/include/rvlm/fdtd/common/internal_macros.h"
     "${S}/include/rvlm/fdtd/common/string_format.h"
     "${S}/include/rvlm/fdtd/common/common_typedefs.h"
     "${S}/include/rvlm/fdtd/common/error_handling.h"

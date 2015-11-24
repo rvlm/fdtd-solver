@@ -1,9 +1,9 @@
 #include <hdf5.h>
-#include "rvlm/fdtd/common/common_helpers_internal.h"
+#include "rvlm/fdtd/common/internal_macros.h"
 #include "rvlm/fdtd/common/simulation_parameters_reader.h"
 
 struct rfdtd_simulation_params *rfdtd_read_hdf5_file(
-        const char *filename, struct rfdtd_error_stack *stack) {
+        const char *filename, struct rfdtd_error_stack *e) {
 
     struct rfdtd_simulation_params *params;
     hid_t  file_id;
@@ -22,7 +22,7 @@ struct rfdtd_simulation_params *rfdtd_read_hdf5_file(
     H5Fclose(file_id);
     return params;
 
-failure:
+e_raise:
     rfdtd_destroy_simulation_parameters(params);
     H5Fclose(file_id);
     return NULL;
@@ -30,4 +30,5 @@ failure:
 
 void rfdtd_destroy_simulation_parameters(struct rfdtd_simulation_params* contents) {
 
+    FREE(contents);
 }
