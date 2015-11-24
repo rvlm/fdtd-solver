@@ -103,7 +103,7 @@ char* rfdtd_substitute_placeholders(char *begin, char *end,
                          const char **args,
                          int args_count);
 
-/** Primitive string formatter. */
+char *rfdtd_strchrnul(const char *s, char c);
 
 char *rfdtd_copy_string(const char *src, char *dst, char* dst_end);
 /** Copies characters from `src` to `dst` to the boundary `dst_end`.

@@ -6,14 +6,6 @@
 #include <ctype.h>
 #include "rvlm/fdtd/common/string_format.h"
 
-char *rfdtd_strchrnul(const char *s, char c) {
-    const char *i;
-    for (i = s; *i != '\0' && *i != c; ++i)
-        ;
-
-    return (char*)i;
-}
-
 enum token_type {
     TOKEN_LITERAL,
     TOKEN_PLACEHOLDER,
@@ -26,14 +18,14 @@ struct tokenizer_state {
     char *end;
 };
 
-void tokenizer_init(struct tokenizer_state *state, const char *str) {
+static void tokenizer_init(struct tokenizer_state *state, const char *str) {
     state->str   = str;
     state->begin = NULL;
     state->end   = NULL;
     state->token_type = TOKEN_LITERAL;
 }
 
-bool tokenizer_next(struct tokenizer_state *state) {
+static bool tokenizer_next(struct tokenizer_state *state) {
 
     char *begin;
     char *found;
@@ -73,50 +65,7 @@ bool tokenizer_next(struct tokenizer_state *state) {
     }
 }
 
-char* rfdtd_vformat(char *begin, char *end, const char *fmt, va_list va_args) {
-
-    char *content;
-
-    if (end - begin <= 0)
-        goto error;
-
-    struct tokenizer_state tok_state;
-    tokenizer_init(&tok_state, fmt);
-
-    while (tokenizer_next(&tok_state) && (end - begin) > 0) {
-        switch (tok_state.token_type) {
-        case TOKEN_LITERAL:
-            content = tok_state.begin;
-            begin = rfdtd_copy_string(content, begin, end);
-
-        case TOKEN_PLACEHOLDER:
-            content = tok_state.begin + 1;
-            begin = rfdtd_format_placeholder(begin, end, content, va_args);
-            break;
-        }
-
-        if (begin == end)
-            goto error;
-    }
-
-    return begin;
-
-error:
-    return end;
-}
-
-char* rfdtd_format(char *begin, char *end, const char *fmt, ...) {
-
-    va_list va_args;
-    va_start(va_args, fmt);
-
-    begin = rfdtd_vformat(begin, end, fmt, va_args);
-    va_end(va_args);
-
-    return begin;
-}
-
-bool placeholder_names_equal(const char *s1, const char *s2) {
+static bool placeholder_names_equal(const char *s1, const char *s2) {
 
     const char *a = s1;
     const char *b = s2;
@@ -128,9 +77,32 @@ bool placeholder_names_equal(const char *s1, const char *s2) {
     return (!isalnum(*a) && !isalnum(b));
 }
 
+// === Exported functions ===
+
+char *rfdtd_strchrnul(const char *s, char c) {
+    const char *i;
+    for (i = s; *i != '\0' && *i != c; ++i)
+        ;
+
+    return (char*)i;
+}
+
+char *rfdtd_copy_string(const char *src, char *dst, char* dst_end) {
+    const char *s = src;
+    char *d = dst;
+
+    if (dst >= dst_end)
+        return NULL;
+
+    while (*s != '\0' && d < dst_end-1)
+        *(d++) = *(s++);
+
+    *d = '\0';
+    return d;
+}
+
 char *rfdtd_format_placeholder(char *begin, char *end,
                                const char *hldr_name, va_list va_args) {
-
     char *fmt, *arg_name;
     int size;
     int n;
@@ -146,7 +118,7 @@ char *rfdtd_format_placeholder(char *begin, char *end,
     va_list vp;
     va_copy(vp, va_args);
 
-    for ( ; ;) {
+    while (true) {
         arg_name = va_arg(vp, const char *);
         if (arg_name == NULL || strcmp(arg_name, "") == 0)
             break;
@@ -154,7 +126,7 @@ char *rfdtd_format_placeholder(char *begin, char *end,
         if (!placeholder_names_equal(arg_name, hldr_name)) {
             switch (arg_name[0]) {
                 case 'i': va_arg(vp, int);         break;
-                case 'f': va_arg(vp, float);       break;
+                case 'f': va_arg(vp, double);      break;
                 case 'd': va_arg(vp, double);      break;
                 case 's': va_arg(vp, const char*); break;
                 default:
@@ -168,7 +140,7 @@ char *rfdtd_format_placeholder(char *begin, char *end,
                     str = "0";
                     break;
                 case 'f':
-                    vfloat = va_arg(vp, float);
+                    vdouble = va_arg(vp, double);
                     str = "0.0f";
                     break;
                 case 'd':
@@ -195,8 +167,7 @@ error:
 }
 
 char *rfdtd_vformat_placeholders(char *begin, char *end,
-                               char **args, int args_count, va_list va_args) {
-
+                                 char **args, int args_count, va_list va_args) {
     char *holder_name;
     char *terminator;
     int i;
@@ -226,7 +197,6 @@ char *rfdtd_format_placeholders(char *begin, char* end,
     char *result;
     va_list va_args;
 
-    // Let mortal combat begin!
     va_start(va_args, args_count);
     result = rfdtd_vformat_placeholders(begin, end, args, args_count, va_args);
     va_end(va_args);
@@ -281,16 +251,3 @@ char *rfdtd_substitute_placeholders(char *begin, char *end,
     return begin;
 }
 
-char *rfdtd_copy_string(const char *src, char *dst, char* dst_end) {
-    const char *s = src;
-    char *d = dst;
-
-    if (dst >= dst_end)
-        return NULL;
-
-    while (*s != '\0' && d < dst_end-1)
-        *(d++) = *(s++);
-
-    *d = '\0';
-    return d;
-}
