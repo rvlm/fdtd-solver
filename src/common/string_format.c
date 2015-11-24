@@ -116,36 +116,81 @@ char* rfdtd_format(char *begin, char *end, const char *fmt, ...) {
     return begin;
 }
 
+bool placeholder_names_equal(const char *s1, const char *s2) {
+
+    const char *a = s1;
+    const char *b = s2;
+    while (*a == *b && isalnum(*a)) {
+        ++a;
+        ++b;
+    }
+
+    return (!isalnum(*a) && !isalnum(b));
+}
+
 char *rfdtd_format_placeholder(char *begin, char *end,
                                const char *hldr_name, va_list va_args) {
 
-    char *fmt;
+    char *fmt, *arg_name;
     int size;
     int n;
+
+    int vint;
+    float vfloat;
+    double vdouble;
+    char *str;
 
     if (end - begin <= 0)
         goto error;
 
-    switch (hldr_name[0]) {
-        case 'i': fmt = "%i";  break;
-        case 'f': fmt = "%f";  break;
-        case 'd': fmt = "%lf"; break;
-        case 's': fmt = "%s";  break;
-        default:
-            goto error;
+    va_list vp;
+    va_copy(vp, va_args);
+
+    for ( ; ;) {
+        arg_name = va_arg(vp, const char *);
+        if (arg_name == NULL || strcmp(arg_name, "") == 0)
+            break;
+
+        if (!placeholder_names_equal(arg_name, hldr_name)) {
+            switch (arg_name[0]) {
+                case 'i': va_arg(vp, int);         break;
+                case 'f': va_arg(vp, float);       break;
+                case 'd': va_arg(vp, double);      break;
+                case 's': va_arg(vp, const char*); break;
+                default:
+                    goto error;
+            }
+        }
+        else {
+            switch (*arg_name) {
+                case 'i':
+                    vint = va_arg(vp, int);
+                    str = "0";
+                    break;
+                case 'f':
+                    vfloat = va_arg(vp, float);
+                    str = "0.0f";
+                    break;
+                case 'd':
+                    vdouble = va_arg(vp, double);
+                    str = "0.0";
+                    break;
+                case 's':
+                    str = va_arg(vp, const char*);
+                    break;
+                default:
+                    goto error;
+            }
+
+            break;
+        }
     }
 
-    size = (int)(end - begin);
-    n = vsnprintf(begin, (size_t) size, fmt, va_args);
-
-    // Terminate string if result is truncated.
-    if (n >= size)
-        n = size - 1;
-
-    *(begin + n) = '\0';
-    return begin + n;
+    // copy it here!
+    begin = rfdtd_copy_string(str, begin, end);
 
 error:
+    va_end(vp);
     return end;
 }
 
@@ -190,20 +235,21 @@ char *rfdtd_format_placeholders(char *begin, char* end,
 }
 
 char *rfdtd_lookup_arg(const char* arg, const char **args, int args_count) {
-    const char *cur1;
-    const char *cur2;
-    size_t n;
-    int i, j;
+    const char *a;
+    const char *b;
+    int i;
 
+    const char *equal_sign;
     for (i = 0; i < args_count; ++i) {
-        cur1 = args[i];
-        cur2 = arg;
-        for (j = 0; *cur1 != '=' && *cur1 != '\0' &&
-                    *cur2 != '\0' && *cur1 == *cur2; ++cur1, ++cur2)
-            ;
+        a = args[i];
+        b = arg;
+        while (*a == *b && isalnum(*a)) {
+            ++a;
+            ++b;
+        }
 
-        if ((*cur1 == '\0' || *cur1 == '=') && !isalnum(*cur2))
-            return *cur1 == '\0' ? cur1 : cur1 + 1;
+        if (*a == '=' && !isalnum(*b))
+            return a + 1;
     }
 
     return NULL;
