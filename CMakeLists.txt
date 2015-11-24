@@ -7,6 +7,10 @@ project(rFDTD C)
 set(S "${CMAKE_CURRENT_SOURCE_DIR}")
 set(B "${CMAKE_CURRENT_BINARY_DIR}")
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${S}")
+find_package(NetCDF REQUIRED)
+find_package(OpenCL REQUIRED)
+
 # Build options.
 option(RFDTD_CONFIG_USE_DOUBLE "Use double precision floats")
 option(RFDTD_CONFIG_UNIT_TESTS "Build unit-tests for library")
@@ -90,8 +94,8 @@ add_library(rvlmfdtd STATIC
 
 # -- unit tests --
 if(RFDTD_CONFIG_UNIT_TESTS)
-    find_program(PYTHON python REQUIRED)
-    find_library(CUNIT_LIBRARIES cunit REQUIRED)
+    find_package(PythonInterp REQUIRED)
+    find_package(CUnit REQUIRED)
     enable_testing()
 
     add_executable(rvlmfdtd-test
@@ -114,7 +118,7 @@ if(RFDTD_CONFIG_UNIT_TESTS)
     add_custom_command(
         OUTPUT  "${B}/include/generated-tests.h"
         DEPENDS "${S}/generate_test_registry.py" ${TEST_SOURCES}
-        COMMAND "${PYTHON}"
+        COMMAND "${PYTHON_EXECUTABLE}"
                 "${S}/generate_test_registry.py"
                     --output "${B}/include/generated-tests.h"
                               ${TEST_SOURCES}
