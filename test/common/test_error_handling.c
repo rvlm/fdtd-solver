@@ -123,3 +123,4 @@ extern void test_error_handling_stack_works_2(void) {
     CU_ASSERT_STRING_EQUAL(entry->fmt,  "Root of negative value x={iArg}");
     CU_ASSERT_STRING_EQUAL(entry->msg,  "Root of negative value x=-1");
 }
+

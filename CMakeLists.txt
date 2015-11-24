@@ -7,6 +7,7 @@ project(rFDTD C)
 set(S "${CMAKE_CURRENT_SOURCE_DIR}")
 set(B "${CMAKE_CURRENT_BINARY_DIR}")
 
+# Thirdparty libraries lookup.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${S}")
 find_package(NetCDF REQUIRED)
 find_package(OpenCL REQUIRED)
@@ -103,6 +104,8 @@ if(RFDTD_CONFIG_UNIT_TESTS)
         "${S}/generate_test_registry.py"
 	    "${S}/test/common/test_string_format.c"
 	    "${S}/test/common/test_error_handling.c"
+        "${S}/test/common/test_internal_macros.c"
+        "${S}/test/common/test_memory_allocation.c"
         "${S}/test/main_cunit.c")
 
     # Gather all '*.c' files from 'rvlmfdtd-test' target into TEST_SOURCES. 
@@ -135,7 +138,7 @@ if(RFDTD_CONFIG_CPPCHECK)
         "${CPPCHECK}" --quiet
                       --template=gcc
                       --language=c
-                      --std=c89
+                      --std=c99
                       --enable=all
                       -I "${S}/include"
                       "${S}/src"

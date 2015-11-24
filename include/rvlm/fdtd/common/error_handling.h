@@ -64,6 +64,7 @@ struct rfdtd_error_stack {
     struct rfdtd_error_entry buf[RFDTD_ERROR_STACK_CAPACITY];
     int tip;
     int count;
+    char initialized[4];
 };
 
 void rfdtd_initialize_stack(struct rfdtd_error_stack *stack);
@@ -94,5 +95,9 @@ void rfdtd_push_error(
 		const char *expr,
         enum rfdtd_error_code code,
         const char *fmt, ...);
+
+void rfdtd_panic(const char *fmt, ...);
+
+void rfdtd_warning(const char *fmt, ...);
 
 #endif

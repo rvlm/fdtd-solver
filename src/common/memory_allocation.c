@@ -17,6 +17,5 @@ e_raise:
 }
 
 void rfdtd_memory_free(void *ptr) {
-    free(*(void **)ptr);
-    *(void **)ptr = NULL;
+    free(ptr);
 }

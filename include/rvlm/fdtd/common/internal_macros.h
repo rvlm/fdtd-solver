@@ -104,8 +104,9 @@
     allocate is determined as `sizeof(*var)`. If, for some reason, allocation
     fails, `var` is assigned to null pointer. */
 
-#define NEW_ARRAY(var, n) \
-    do { (var) = rfdtd_memory_allocate((n)*sizeof(*(var)), e); \
+#define NEW_ARRAY(var, n)                                      \
+    do { if ((var)) goto e_memory;                             \
+         (var) = rfdtd_memory_allocate((n)*sizeof(*(var)), e); \
          if (e->count) goto e_memory; } while (0)
 /** Allocates array to pointer variable `var`. The number of bytes to allocate
     is determined as `n*sizeof(*var)`. If, for some reason, allocation fails,
