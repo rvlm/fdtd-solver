@@ -96,7 +96,7 @@ if(RFDTD_CONFIG_UNIT_TESTS)
 
     add_executable(rvlmfdtd-test
         "${B}/include/generated-tests.h"
-        "${S}/generate-test-registry.py"
+        "${S}/generate_test_registry.py"
 	    "${S}/test/common/test_string_format.c"
 	    "${S}/test/common/test_error_handling.c"
         "${S}/test/main_cunit.c")
@@ -113,9 +113,9 @@ if(RFDTD_CONFIG_UNIT_TESTS)
 
     add_custom_command(
         OUTPUT  "${B}/include/generated-tests.h"
-        DEPENDS "${S}/generate-test-registry.py" ${TEST_SOURCES}
+        DEPENDS "${S}/generate_test_registry.py" ${TEST_SOURCES}
         COMMAND "${PYTHON}"
-                "${S}/generate-test-registry.py"
+                "${S}/generate_test_registry.py"
                     --output "${B}/include/generated-tests.h"
                               ${TEST_SOURCES}
         COMMENT "Generating CUnit registry header file")
