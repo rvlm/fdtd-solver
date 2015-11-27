@@ -41,6 +41,11 @@ e_memory:
     CU_ASSERT_PTR_NULL(ss);
 }
 
+// The hacky way to disable destructive behavior of 'rfdtd_panic' and let
+// unit test program continue with goto jump instead emergency termination.
+// This isn't supposed to be the gem of beautiful code, but it works.
+#define rfdtd_panic(...) do { goto e_panic; } while (0)
+
 extern void test_internal_macros_new_error_if_not_null(void) {
 
     struct rfdtd_error_stack stack;
@@ -51,10 +56,10 @@ extern void test_internal_macros_new_error_if_not_null(void) {
     NEW_ARRAY(fs, 10);
     NEW(fs);
 
-    CU_FAIL("Expected goto e_memory.");
+    CU_FAIL("Expected goto e_panic.");
 
 e_memory:
-
+e_panic:
     CU_ASSERT_PTR_NOT_NULL(fs);
     DISPOSE(fs);
     CU_ASSERT_PTR_NULL(fs);

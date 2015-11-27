@@ -1,0 +1,37 @@
+netcdf yee_lattice_2cells {
+dimensions:
+    yee_nx_Ex = 1;
+    yee_nx_Ey = 2;
+    yee_nx_Ez = 2;
+    yee_ny_Ex = 3;
+    yee_ny_Ey = 2;
+    yee_ny_Ez = 3;
+    yee_nz_Ex = 3;
+    yee_nz_Ey = 3;
+    yee_nz_Ez = 2;
+
+variables:
+    float yee_x_Ex(yee_nx_Ex);
+    float yee_x_Ey(yee_nx_Ey);
+    float yee_x_Ez(yee_nx_Ez);
+    float yee_y_Ex(yee_ny_Ex);
+    float yee_y_Ey(yee_ny_Ey);
+    float yee_y_Ez(yee_ny_Ez);
+    float yee_z_Ex(yee_nz_Ex);
+    float yee_z_Ey(yee_nz_Ey);
+    float yee_z_Ez(yee_nz_Ez);
+
+data:
+    yee_x_Ex = 0.5;
+    yee_y_Ex = 0.0, 1.0, 2.0;
+    yee_z_Ex = 0.0, 1.0, 2.0;
+
+    yee_x_Ey = 0.0, 1.0;
+    yee_y_Ey = 0.5, 1.5;
+    yee_z_Ey = 0.0, 1.0, 2.0;
+
+    yee_x_Ez = 0.0, 1.0;
+    yee_y_Ez = 0.0, 1.0, 2.0;
+    yee_z_Ez = 0.5, 1.5;
+
+}

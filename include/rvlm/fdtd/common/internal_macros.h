@@ -80,10 +80,10 @@
     } while (0)
 
 #define RAISE_ASSERT(expr) \
-     RAISE_ASSERT_M((expr), RFDTD_ASSERTION_ERROR, "Assertion failed")
+     ASSERT_M((expr), RFDTD_ASSERTION_ERROR, "Assertion failed")
 
 #define CHECK(e) \
-    do { if (e.count) goto e_check; } while (0)
+    do { if ((e)->count != 0) goto e_check; } while (0)
 
 
 /** Memory management
@@ -105,15 +105,15 @@
     fails, `var` is assigned to null pointer. */
 
 #define NEW_ARRAY(var, n)                                      \
-    do { if ((var)) goto e_memory;                             \
+    do { if ((var) != NULL) rfdtd_panic("Bad pointer");        \
          (var) = rfdtd_memory_allocate((n)*sizeof(*(var)), e); \
          if (e->count) goto e_memory; } while (0)
 /** Allocates array to pointer variable `var`. The number of bytes to allocate
     is determined as `n*sizeof(*var)`. If, for some reason, allocation fails,
     `var` is assigned to null pointer. */
 
-#define DISPOSE(var) \
-    do { if (!(var)) rfdtd_memory_free((var)); \
+#define DISPOSE(var)                                           \
+    do { if (!(var)) rfdtd_memory_free((var));                 \
          (var) = NULL; } while (0)
 /** Frees previously allocated memory. If `var` was previously allocated via
     :func:`NEW` or :func:`ALLOC`, then this function reclaims the memory and

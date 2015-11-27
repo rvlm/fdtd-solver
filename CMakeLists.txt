@@ -76,39 +76,63 @@ configure_file(
 
 include_directories(
     "${S}/include"
-    "${B}/include")
+    "${B}/include"
+    "${NETCDF_INCLUDE_DIRS}")
 
 add_library(rvlmfdtd STATIC
     "${S}/include/rvlm/fdtd/common/internal_macros.h"
     "${S}/include/rvlm/fdtd/common/string_format.h"
     "${S}/include/rvlm/fdtd/common/common_typedefs.h"
     "${S}/include/rvlm/fdtd/common/error_handling.h"
-    "${S}/include/rvlm/fdtd/common/memory_allocation.h"    
-    "${S}/include/rvlm/fdtd/common/simulation_parameters_enums.h"
-    "${S}/include/rvlm/fdtd/common/simulation_parameters_reader.h"
-    "${S}/include/rvlm/fdtd/common/simulation_parameters.h"
+    "${S}/include/rvlm/fdtd/common/memory_allocation.h"
+    "${S}/include/rvlm/fdtd/common/netcdf_helpers.h"
+    "${S}/include/rvlm/fdtd/common/problem_formulation.h"
+    "${S}/include/rvlm/fdtd/common/problem_formulation_netcdf.h"
     "${S}/src/common/string_format.c"
     "${S}/src/common/error_handling.c"
     "${S}/src/common/memory_allocation.c"
-    "${S}/src/common/simulation_parameters_reader.c"
+    "${S}/src/common/netcdf_helpers.c"
+    "${S}/src/common/problem_formulation_netcdf.c"
     "${S}/config.h.in")
+
+target_link_libraries(rvlmfdtd ${NETCDF_LIBRARIES})
 
 # -- unit tests --
 if(RFDTD_CONFIG_UNIT_TESTS)
     find_package(PythonInterp REQUIRED)
     find_package(CUnit REQUIRED)
+    find_program(NCGEN_EXECUTABLE ncgen)
     enable_testing()
+
+    configure_file(
+        "${S}/test/test_config.h.in"
+        "${B}/include/rvlm/fdtd/test_config.h")
+
+    include_directories(
+        "${S}/include"
+        "${B}/include")
 
     add_executable(rvlmfdtd-test
         "${B}/include/generated-tests.h"
+        "${B}/test/_data/yee_lattice_1x2x2.nc"
         "${S}/generate_test_registry.py"
 	    "${S}/test/common/test_string_format.c"
 	    "${S}/test/common/test_error_handling.c"
         "${S}/test/common/test_internal_macros.c"
         "${S}/test/common/test_memory_allocation.c"
-        "${S}/test/main_cunit.c")
+        "${S}/test/common/test_problem_formulation_netcdf.c"
+        "${S}/test/main_cunit.c"
+        "${S}/test/test_config.h.in")
 
-    # Gather all '*.c' files from 'rvlmfdtd-test' target into TEST_SOURCES. 
+    add_custom_command(
+        OUTPUT  "${B}/test/_data/yee_lattice_1x2x2.nc"
+        COMMAND "${CMAKE_COMMAND}" -E make_directory "${B}/test/_data"
+        COMMAND "${NCGEN_EXECUTABLE}"
+                    -o "${B}/test/_data/yee_lattice_1x2x2.nc"
+                       "${S}/test/_data/yee_lattice_1x2x2.ncdl"
+        COMMENT "Generating NetCDF files for unit tests")
+
+    # Gather all '*.c' files from 'rvlmfdtd-test' target into TEST_SOURCES.
     get_target_property(TEST_SOURCES_TMP rvlmfdtd-test SOURCES)
     set(TEST_SOURCES)
     foreach(ITEM ${TEST_SOURCES_TMP})

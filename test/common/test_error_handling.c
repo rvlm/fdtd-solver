@@ -20,8 +20,6 @@ static int pseudo_sqrt(int x, struct rfdtd_error_stack *e) {
 }
 
 static int pseudo_sqrt_2(int x, struct rfdtd_error_stack *e) {
-    int result;
-
     RAISE_ASSERT_M(x >= 0,
         RFDTD_UNKNOWN_ERROR,
         "Root of negative value x={iArg}",
