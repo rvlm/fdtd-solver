@@ -1,6 +1,5 @@
 #include <stdarg.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -19,23 +18,23 @@ static void assert_stack(struct rfdtd_error_stack *stack) {
                  stack->tip   <  RFDTD_ERROR_STACK_CAPACITY &&
                  stack->count <= RFDTD_ERROR_STACK_CAPACITY);
     if (!okay)
-        goto epanic;
+        goto e_panic;
 
     if (stack->count > 0) {
         if (stack->tip == 0)
-            goto epanic;
+            goto e_panic;
     }
 
     okay = (stack->initialized[0] == '\x55' &&
-            stack->initialized[1] == '\xa4' &&
+            stack->initialized[1] == '\x14' &&
             stack->initialized[2] == '\x6c' &&
-            stack->initialized[3] == '\xf4');
+            stack->initialized[3] == '\x74');
     if (!okay)
-        goto epanic;
+        goto e_panic;
 
     return;
 
-epanic:
+e_panic:
     rfdtd_panic("Something wrong with error stack.");
 }
 
@@ -45,15 +44,19 @@ void rfdtd_initialize_stack(struct rfdtd_error_stack *stack) {
     if (stack == NULL)
         rfdtd_panic("Cannot initialize error stack");
 
+    // Make CLion static analysis happy.
+    if (stack == NULL)
+        return;
+
     stack->tip   = 0;
     stack->count = 0;
     for (i = 0; i < RFDTD_ERROR_STACK_CAPACITY; ++i)
         clear_entry(&stack->buf[i]);
 
     stack->initialized[0] = '\x55';
-    stack->initialized[1] = '\xa4';
+    stack->initialized[1] = '\x14';
     stack->initialized[2] = '\x6c';
-    stack->initialized[3] = '\xf4';
+    stack->initialized[3] = '\x74';
 }
 
 struct rfdtd_error_entry *rfdtd_get_stack_entry(
