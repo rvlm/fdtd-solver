@@ -13,9 +13,9 @@ enum token_type {
 
 struct tokenizer_state {
     enum token_type token_type;
-    char *str;
-    char *begin;
-    char *end;
+    const char *str;
+    const char *begin;
+    const char *end;
 };
 
 static void tokenizer_init(struct tokenizer_state *state, const char *str) {
@@ -27,8 +27,8 @@ static void tokenizer_init(struct tokenizer_state *state, const char *str) {
 
 static bool tokenizer_next(struct tokenizer_state *state) {
 
-    char *begin;
-    char *found;
+    const char *begin;
+    const char *found;
 
     begin = (state->begin == NULL) ? state->str : state->end;
 
@@ -58,15 +58,14 @@ static bool tokenizer_next(struct tokenizer_state *state) {
                 }
             } while (false);
 
-            state->begin = begin;
-            state->end   = (*found == '\0' ? found : found + 1);
+            state->begin= begin;
+            state->end  = (*found == '\0' ? found : found + 1);
             state->token_type = TOKEN_LITERAL;
             return true;
     }
 }
 
 static bool placeholder_names_equal(const char *s1, const char *s2) {
-
     const char *a = s1;
     const char *b = s2;
     while (*a == *b && isalnum(*a)) {
@@ -76,8 +75,6 @@ static bool placeholder_names_equal(const char *s1, const char *s2) {
 
     return (!isalnum(*a) && !isalnum(b));
 }
-
-// === Exported functions ===
 
 char *rfdtd_strchrnul(const char *s, char c) {
     const char *i;
