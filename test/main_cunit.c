@@ -3,6 +3,7 @@
 
 int main(void) {
     int error;
+    int result;
 
     error = setup_tests_registry();
     if (error != CUE_SUCCESS) {
@@ -11,5 +12,8 @@ int main(void) {
 
     CU_basic_set_mode(CU_BRM_VERBOSE);
     CU_basic_run_tests();
-    return (int)CU_get_number_of_tests_failed();
+    result = (int)CU_get_number_of_tests_failed();
+
+    CU_cleanup_registry();
+    return result;
 }

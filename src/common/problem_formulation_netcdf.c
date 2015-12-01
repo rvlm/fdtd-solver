@@ -6,8 +6,8 @@
 struct rfdtd_problem_formulation *rfdtd_create_problem_formulation_from_netcdf(
         const char *filename, struct rfdtd_error_stack *e) {
 
-    struct rfdtd_problem_formulation *result = NULL;
-    struct rfdtd_lattice_params    *lattice = NULL;
+    struct rfdtd_problem_formulation *result  = NULL;
+    struct rfdtd_lattice_params      *lattice = NULL;
 
     int err;
     int ncid;
@@ -52,6 +52,15 @@ e_fileopen:
     return NULL;
 }
 
-void rfdtd_destroy_problem_formulation_netcdf(struct rfdtd_problem_formulation * contents) {
-    //
+void rfdtd_destroy_problem_formulation_netcdf(struct rfdtd_problem_formulation *problem) {
+    rfdtd_memory_free(problem->lattice.x_Ex);
+    rfdtd_memory_free(problem->lattice.x_Ey);
+    rfdtd_memory_free(problem->lattice.x_Ez);
+    rfdtd_memory_free(problem->lattice.y_Ex);
+    rfdtd_memory_free(problem->lattice.y_Ey);
+    rfdtd_memory_free(problem->lattice.y_Ez);
+    rfdtd_memory_free(problem->lattice.z_Ex);
+    rfdtd_memory_free(problem->lattice.z_Ey);
+    rfdtd_memory_free(problem->lattice.z_Ez);
+    rfdtd_memory_free(problem);
 }

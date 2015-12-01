@@ -15,6 +15,7 @@ extern void test_problem_formulation_netcdf_lattice_1x2x2(void) {
 
     problem = rfdtd_create_problem_formulation_from_netcdf(filename, e);
     CU_ASSERT_EQUAL(e->count, 0);
-    CU_ASSERT_PTR_NOT_NULL_FATAL(problem);
+    CU_ASSERT_PTR_NOT_NULL(problem);
 
+    rfdtd_destroy_problem_formulation_netcdf(problem);
 }

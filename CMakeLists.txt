@@ -16,6 +16,7 @@ find_package(OpenCL REQUIRED)
 option(RFDTD_CONFIG_USE_DOUBLE "Use double precision floats")
 option(RFDTD_CONFIG_UNIT_TESTS "Build unit-tests for library")
 option(RFDTD_CONFIG_CPPCHECK   "Check library sources with CppCheck")
+option(RFDTD_CONFIG_VALGRIND   "Check library unit tests with Valgrind")
 option(RFDTD_INSTALL_SOURCES   "Install source files too")
 
 if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
@@ -152,7 +153,12 @@ if(RFDTD_CONFIG_UNIT_TESTS)
         COMMENT "Generating CUnit registry header file")
 
     target_link_libraries(rvlmfdtd-test rvlmfdtd ${CUNIT_LIBRARIES})
+
+    if (RFDTD_CONFIG_VALGRIND)
+    add_test(rvlmfdtd-test valgrind ./rvlmfdtd-test)
+    else()
     add_test(rvlmfdtd-test rvlmfdtd-test)
+    endif()
 endif()
 
 # -- cppcheck --
