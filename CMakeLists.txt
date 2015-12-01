@@ -81,6 +81,7 @@ include_directories(
     "${NETCDF_INCLUDE_DIRS}")
 
 add_library(rvlmfdtd STATIC
+    "${S}/include/rvlm/fdtd/common/cross_compiler.h"
     "${S}/include/rvlm/fdtd/common/internal_macros.h"
     "${S}/include/rvlm/fdtd/common/string_format.h"
     "${S}/include/rvlm/fdtd/common/common_typedefs.h"

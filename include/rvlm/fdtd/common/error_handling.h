@@ -16,6 +16,7 @@
 
  */
 #include "rvlm/fdtd/common/common_typedefs.h"
+#include "rvlm/fdtd/common/cross_compiler.h"
 
 #define RFDTD_ERROR_MAX_ARGS 8
 
@@ -96,6 +97,7 @@ void rfdtd_push_error(
         enum rfdtd_error_code code,
         const char *fmt, ...);
 
+RFDTD_NORETURN
 void rfdtd_panic(const char *fmt, ...);
 
 void rfdtd_warning(const char *fmt, ...);
