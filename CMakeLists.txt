@@ -94,6 +94,7 @@ add_library(rvlmfdtd STATIC
     "${S}/src/common/error_handling.c"
     "${S}/src/common/memory_allocation.c"
     "${S}/src/common/netcdf_helpers.c"
+    "${S}/src/common/problem_formulation.c"
     "${S}/src/common/problem_formulation_netcdf.c"
     "${S}/config.h.in")
 

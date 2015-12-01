@@ -1,13 +1,14 @@
 #include <netcdf.h>
 #include "rvlm/fdtd/common/internal_macros.h"
 #include "rvlm/fdtd/common/netcdf_helpers.h"
+#include "rvlm/fdtd/common/problem_formulation.h"
 #include "rvlm/fdtd/common/problem_formulation_netcdf.h"
 
 struct rfdtd_problem_formulation *rfdtd_create_problem_formulation_from_netcdf(
         const char *filename, struct rfdtd_error_stack *e) {
 
     struct rfdtd_problem_formulation *result  = NULL;
-    struct rfdtd_lattice_params      *lattice = NULL;
+    struct rfdtd_lattice_params      *yee = NULL;
 
     int err;
     int ncid;
@@ -16,30 +17,41 @@ struct rfdtd_problem_formulation *rfdtd_create_problem_formulation_from_netcdf(
         goto e_fileopen;
 
     NEW(result);
-    lattice = &result->lattice;
+    rfdtd_init_problem_formulation(result);
+
+    yee = &result->lattice;
 
     //
-    rfdtd_netcdf_getdim(ncid, "yee_nx_Ex", &lattice->nx_Ex, e); CHECK(e);
-    rfdtd_netcdf_getdim(ncid, "yee_nx_Ey", &lattice->nx_Ey, e); CHECK(e);
-    rfdtd_netcdf_getdim(ncid, "yee_nx_Ez", &lattice->nx_Ez, e); CHECK(e);
-    rfdtd_netcdf_getdim(ncid, "yee_ny_Ex", &lattice->ny_Ex, e); CHECK(e);
-    rfdtd_netcdf_getdim(ncid, "yee_ny_Ey", &lattice->ny_Ey, e); CHECK(e);
-    rfdtd_netcdf_getdim(ncid, "yee_ny_Ez", &lattice->ny_Ez, e); CHECK(e);
-    rfdtd_netcdf_getdim(ncid, "yee_nz_Ex", &lattice->nz_Ex, e); CHECK(e);
-    rfdtd_netcdf_getdim(ncid, "yee_nz_Ey", &lattice->nz_Ey, e); CHECK(e);
-    rfdtd_netcdf_getdim(ncid, "yee_nz_Ez", &lattice->nz_Ez, e); CHECK(e);
+    rfdtd_netcdf_getdim(ncid, "yee_nx_Ex", &yee->nx_Ex, e); CHECK(e);
+    rfdtd_netcdf_getdim(ncid, "yee_nx_Ey", &yee->nx_Ey, e); CHECK(e);
+    rfdtd_netcdf_getdim(ncid, "yee_nx_Ez", &yee->nx_Ez, e); CHECK(e);
+    rfdtd_netcdf_getdim(ncid, "yee_ny_Ex", &yee->ny_Ex, e); CHECK(e);
+    rfdtd_netcdf_getdim(ncid, "yee_ny_Ey", &yee->ny_Ey, e); CHECK(e);
+    rfdtd_netcdf_getdim(ncid, "yee_ny_Ez", &yee->ny_Ez, e); CHECK(e);
+    rfdtd_netcdf_getdim(ncid, "yee_nz_Ex", &yee->nz_Ex, e); CHECK(e);
+    rfdtd_netcdf_getdim(ncid, "yee_nz_Ey", &yee->nz_Ey, e); CHECK(e);
+    rfdtd_netcdf_getdim(ncid, "yee_nz_Ez", &yee->nz_Ez, e); CHECK(e);
+    
 
-    NEW_ARRAY(lattice->x_Ex, lattice->nx_Ex);
-    NEW_ARRAY(lattice->x_Ey, lattice->nx_Ey);
-    NEW_ARRAY(lattice->x_Ez, lattice->nx_Ez);
-    NEW_ARRAY(lattice->y_Ex, lattice->ny_Ex);
-    NEW_ARRAY(lattice->y_Ey, lattice->ny_Ey);
-    NEW_ARRAY(lattice->y_Ez, lattice->ny_Ez);
-    NEW_ARRAY(lattice->z_Ex, lattice->nz_Ex);
-    NEW_ARRAY(lattice->z_Ey, lattice->nz_Ey);
-    NEW_ARRAY(lattice->z_Ez, lattice->nz_Ez);
-    rfdtd_netcdf_getnumarray(ncid, "yee_x_Ex", lattice->x_Ex, lattice->nx_Ex, e); CHECK(e);
+    NEW_ARRAY(yee->x_Ex, yee->nx_Ex);
+    NEW_ARRAY(yee->x_Ey, yee->nx_Ey);
+    NEW_ARRAY(yee->x_Ez, yee->nx_Ez);
+    NEW_ARRAY(yee->y_Ex, yee->ny_Ex);
+    NEW_ARRAY(yee->y_Ey, yee->ny_Ey);
+    NEW_ARRAY(yee->y_Ez, yee->ny_Ez);
+    NEW_ARRAY(yee->z_Ex, yee->nz_Ex);
+    NEW_ARRAY(yee->z_Ey, yee->nz_Ey);
+    NEW_ARRAY(yee->z_Ez, yee->nz_Ez);
 
+    rfdtd_netcdf_getnumarray(ncid, "yee_x_Ex", yee->x_Ex, yee->nx_Ex, e); CHECK(e);
+    rfdtd_netcdf_getnumarray(ncid, "yee_x_Ey", yee->x_Ey, yee->nx_Ey, e); CHECK(e);
+    rfdtd_netcdf_getnumarray(ncid, "yee_x_Ez", yee->x_Ez, yee->nx_Ez, e); CHECK(e);
+    rfdtd_netcdf_getnumarray(ncid, "yee_y_Ex", yee->y_Ex, yee->ny_Ex, e); CHECK(e);
+    rfdtd_netcdf_getnumarray(ncid, "yee_y_Ey", yee->y_Ey, yee->ny_Ey, e); CHECK(e);
+    rfdtd_netcdf_getnumarray(ncid, "yee_y_Ez", yee->y_Ez, yee->ny_Ez, e); CHECK(e);
+    rfdtd_netcdf_getnumarray(ncid, "yee_z_Ex", yee->z_Ex, yee->nz_Ex, e); CHECK(e);
+    rfdtd_netcdf_getnumarray(ncid, "yee_z_Ey", yee->z_Ey, yee->nz_Ey, e); CHECK(e);
+    rfdtd_netcdf_getnumarray(ncid, "yee_z_Ez", yee->z_Ez, yee->nz_Ez, e); CHECK(e);
     return result;
 
 e_check:
@@ -52,15 +64,20 @@ e_fileopen:
     return NULL;
 }
 
-void rfdtd_destroy_problem_formulation_netcdf(struct rfdtd_problem_formulation *problem) {
-    rfdtd_memory_free(problem->lattice.x_Ex);
-    rfdtd_memory_free(problem->lattice.x_Ey);
-    rfdtd_memory_free(problem->lattice.x_Ez);
-    rfdtd_memory_free(problem->lattice.y_Ex);
-    rfdtd_memory_free(problem->lattice.y_Ey);
-    rfdtd_memory_free(problem->lattice.y_Ez);
-    rfdtd_memory_free(problem->lattice.z_Ex);
-    rfdtd_memory_free(problem->lattice.z_Ey);
-    rfdtd_memory_free(problem->lattice.z_Ez);
-    rfdtd_memory_free(problem);
+void rfdtd_destroy_problem_formulation_netcdf(
+        struct rfdtd_problem_formulation *problem) {
+
+    if (problem == NULL)
+        return;
+
+    DISPOSE(problem->lattice.x_Ex);
+    DISPOSE(problem->lattice.x_Ey);
+    DISPOSE(problem->lattice.x_Ez);
+    DISPOSE(problem->lattice.y_Ex);
+    DISPOSE(problem->lattice.y_Ey);
+    DISPOSE(problem->lattice.y_Ez);
+    DISPOSE(problem->lattice.z_Ex);
+    DISPOSE(problem->lattice.z_Ey);
+    DISPOSE(problem->lattice.z_Ez);
+    DISPOSE(problem);
 }

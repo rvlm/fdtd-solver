@@ -125,6 +125,7 @@ struct rfdtd_lattice_params {
     rfdtd_number_t *z_Ex;
     rfdtd_number_t *z_Ey;
     rfdtd_number_t *z_Ez;
+
 };
 
 struct rfdtd_problem_formulation {
@@ -136,8 +137,9 @@ struct rfdtd_problem_formulation {
     struct rfdtd_probe_params        *probes;
 
     unsigned boundaries_count;
-    unsigned materials_count;
     unsigned probes_count;
 };
+
+void rfdtd_init_problem_formulation(struct rfdtd_problem_formulation* problem);
 
 #endif
