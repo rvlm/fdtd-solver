@@ -42,6 +42,21 @@ enum rfdtd_field_components {
     RFDTD_EH_FIELDS = RFDTD_E_FIELD | RFDTD_H_FIELD
 };
 
+enum rfdtd_material_components {
+    RFDTD_EPSILON_EX = 0x0001,
+    RFDTD_EPSILON_EY = 0x0002,
+    RFDTD_EPSILON_EZ = 0x0004,
+    RFDTD_MU_HX      = 0x0011,
+    RFDTD_MU_HY      = 0x0012,
+    RFDTD_MU_HZ      = 0x0014,
+    RFDTD_SIGMAE_EX  = 0x0021,
+    RFDTD_SIGMAE_EY  = 0x0022,
+    RFDTD_SIGMAE_EZ  = 0x0024,
+    RFDTD_SIGMAH_HX  = 0x0041,
+    RFDTD_SIGMAH_HY  = 0x0042,
+    RFDTD_SIGMAH_HZ  = 0x0044,
+};
+
 enum rfdtd_boundary_type {
     RFDTD_PEC_BOUNDARY = 0,
     RFDTD_PML_BOUNDARY = 1
@@ -148,6 +163,12 @@ struct rfdtd_lattice_params {
     rfdtd_number_t *z_Hz;
 };
 
+typedef void (*rfdtd_read_materials_function)(
+        struct rfdtd_problem_formulation *problem,
+        enum rfdtd_material_components component,
+        rfdtd_number_t *buf, size_t *offsets, size_t *counts,
+        struct rfdtd_error_stack *e);
+
 struct rfdtd_problem_formulation {
     struct rfdtd_file_metadata        metadata;
     struct rfdtd_scatterfield_params  scatterfield;
@@ -158,6 +179,9 @@ struct rfdtd_problem_formulation {
 
     unsigned boundaries_count;
     unsigned probes_count;
+
+    rfdtd_read_materials_function     read_materials;
+    void                             *constructor_arg;
 };
 
 void rfdtd_init_problem_formulation(struct rfdtd_problem_formulation *problem);

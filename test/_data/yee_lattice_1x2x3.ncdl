@@ -42,6 +42,22 @@ variables:
     float yee_z_Hy(yee_nz_Hy);
     float yee_z_Hz(yee_nz_Hz);
 
+    float world_epsilon_Ex(yee_nx_Ex, yee_ny_Ex, yee_nz_Ex);
+    float world_epsilon_Ey(yee_nx_Ey, yee_ny_Ey, yee_nz_Ey);
+    float world_epsilon_Ez(yee_nx_Ez, yee_ny_Ez, yee_nz_Ez);
+
+    float world_sigmaE_Ex(yee_nx_Ex, yee_ny_Ex, yee_nz_Ex);
+    float world_sigmaE_Ey(yee_nx_Ey, yee_ny_Ey, yee_nz_Ey);
+    float world_sigmaE_Ez(yee_nx_Ez, yee_ny_Ez, yee_nz_Ez);
+
+    float world_mu_Hx(yee_nx_Hx, yee_ny_Hx, yee_nz_Hx);
+    float world_mu_Hy(yee_nx_Hy, yee_ny_Hy, yee_nz_Hy);
+    float world_mu_Hz(yee_nx_Hz, yee_ny_Hz, yee_nz_Hz);
+
+    float world_sigmaH_Hx(yee_nx_Hx, yee_ny_Hx, yee_nz_Hx);
+    float world_sigmaH_Hy(yee_nx_Hy, yee_ny_Hy, yee_nz_Hy);
+    float world_sigmaH_Hz(yee_nx_Hz, yee_ny_Hz, yee_nz_Hz);
+
 data:
     yee_x_Ex = 0.5;
     yee_x_Ey = 0.0, 1.0;
@@ -62,4 +78,40 @@ data:
     yee_z_Hx = 0.5, 1.5, 2.5, 3.5;
     yee_z_Hy = 0.5, 1.5, 2.5, 3.5;
     yee_z_Hz = 1.0, 2.0, 3.0;
+
+    world_epsilon_Ex =
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0;
+
+    world_epsilon_Ey =
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0;
+
+    world_epsilon_Ez =
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0;
+
+    world_sigmaE_Ex =
+            0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0;
+
+    world_sigmaE_Ey =
+            0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0;
+
+    world_sigmaE_Ez =
+            0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0;
 }

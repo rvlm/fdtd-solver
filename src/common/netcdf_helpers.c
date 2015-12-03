@@ -28,20 +28,40 @@ e_raise:
 }
 
 void rfdtd_netcdf_getnumarray(int ncid, const char *name,
-                              rfdtd_number_t *result, size_t count,
+                              rfdtd_number_t *result, size_t offset, size_t count,
                               struct rfdtd_error_stack *e) {
     int err;
     int varid;
-    size_t start_idx;
 
     err = nc_inq_varid(ncid, name, &varid);
     if (err != NC_NOERR) {
         RAISE(RFDTD_UNKNOWN_ERROR, "", NULL);
     }
 
-    start_idx = 0;
-    err = GET_VARA(ncid, varid, &start_idx, &count, result);
+    err = GET_VARA(ncid, varid, &offset, &count, result);
     if (err != NC_NOERR) {
+        const char *str = nc_strerror(err);
+        RAISE(RFDTD_UNKNOWN_ERROR, "", NULL);
+    }
+
+e_raise:
+    return;
+}
+
+void rfdtd_netcdf_getnumarrayN(int ncid, const char *name,
+                              rfdtd_number_t *result, size_t *offsets, size_t *counts,
+                              struct rfdtd_error_stack *e) {
+    int err;
+    int varid;
+
+    err = nc_inq_varid(ncid, name, &varid);
+    if (err != NC_NOERR) {
+        RAISE(RFDTD_UNKNOWN_ERROR, "", NULL);
+    }
+
+    err = GET_VARA(ncid, varid, offsets, counts, result);
+    if (err != NC_NOERR) {
+        const char *str = nc_strerror(err);
         RAISE(RFDTD_UNKNOWN_ERROR, "", NULL);
     }
 
