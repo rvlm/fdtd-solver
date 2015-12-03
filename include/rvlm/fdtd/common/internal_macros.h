@@ -70,7 +70,7 @@
         goto e_raise;                                               \
     } while (0)
 
-#define RAISE_ASSERT_M(expr, code, fmt, ...) \
+#define RAISE_ASSERT_M(expr, code, fmt, ...)                        \
     do {                                                            \
         if (!(expr)) {                                              \
              rfdtd_push_error(e, __FILE__, __LINE__, #expr, (code), \
@@ -80,7 +80,7 @@
     } while (0)
 
 #define RAISE_ASSERT(expr) \
-     ASSERT_M((expr), RFDTD_ASSERTION_ERROR, "Assertion failed")
+    RAISE_ASSERT_M((expr), RFDTD_ASSERTION_ERROR, "Assertion failed", "")
 
 #define CHECK(e) \
     do { if ((e)->count != 0) goto e_check; } while (0)
