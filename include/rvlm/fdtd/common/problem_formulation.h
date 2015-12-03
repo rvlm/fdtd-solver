@@ -116,6 +116,16 @@ struct rfdtd_lattice_params {
     rfdtd_index_t nz_Ey;
     rfdtd_index_t nz_Ez;
 
+    rfdtd_index_t nx_Hx;
+    rfdtd_index_t nx_Hy;
+    rfdtd_index_t nx_Hz;
+    rfdtd_index_t ny_Hx;
+    rfdtd_index_t ny_Hy;
+    rfdtd_index_t ny_Hz;
+    rfdtd_index_t nz_Hx;
+    rfdtd_index_t nz_Hy;
+    rfdtd_index_t nz_Hz;
+
     rfdtd_number_t *x_Ex;
     rfdtd_number_t *x_Ey;
     rfdtd_number_t *x_Ez;
@@ -126,6 +136,15 @@ struct rfdtd_lattice_params {
     rfdtd_number_t *z_Ey;
     rfdtd_number_t *z_Ez;
 
+    rfdtd_number_t *x_Hx;
+    rfdtd_number_t *x_Hy;
+    rfdtd_number_t *x_Hz;
+    rfdtd_number_t *y_Hx;
+    rfdtd_number_t *y_Hy;
+    rfdtd_number_t *y_Hz;
+    rfdtd_number_t *z_Hx;
+    rfdtd_number_t *z_Hy;
+    rfdtd_number_t *z_Hz;
 };
 
 struct rfdtd_problem_formulation {

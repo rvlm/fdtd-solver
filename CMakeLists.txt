@@ -131,8 +131,8 @@ if(RFDTD_CONFIG_UNIT_TESTS)
         OUTPUT  "${B}/test/_data/yee_lattice_1x2x2.nc"
         COMMAND "${CMAKE_COMMAND}" -E make_directory "${B}/test/_data"
         COMMAND "${NCGEN_EXECUTABLE}"
-                    -o "${B}/test/_data/yee_lattice_1x2x2.nc"
-                       "${S}/test/_data/yee_lattice_1x2x2.ncdl"
+                    -o "${B}/test/_data/yee_lattice_1x2x3.nc"
+                       "${S}/test/_data/yee_lattice_1x2x3.ncdl"
         COMMENT "Generating NetCDF files for unit tests")
 
     # Gather all '*.c' files from 'rvlmfdtd-test' target into TEST_SOURCES.

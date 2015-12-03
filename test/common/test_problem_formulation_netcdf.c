@@ -2,10 +2,10 @@
 #include "rvlm/fdtd/common/problem_formulation_netcdf.h"
 #include "rvlm/fdtd/test_config.h"
 
-extern void test_problem_formulation_netcdf_lattice_1x2x2(void) {
+extern void test_problem_formulation_netcdf_lattice_1x2x3(void) {
 
     const char *filename;
-    filename = RFDTD_PROJECT_BINARY_DIR "/test/_data/yee_lattice_1x2x2.nc";
+    filename = RFDTD_PROJECT_BINARY_DIR "/test/_data/yee_lattice_1x2x3.nc";
 
     struct rfdtd_error_stack stack;
     struct rfdtd_error_stack *e = &stack;
