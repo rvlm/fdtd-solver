@@ -4,6 +4,7 @@
 #include <time.h>
 #include <stdbool.h>
 #include "rvlm/fdtd/common/common_typedefs.h"
+#include "rvlm/fdtd/common/error_handling.h"
 
 enum rfdtd_axis_index {
     RFDTD_AXIS_X = 0,
@@ -159,6 +160,10 @@ struct rfdtd_problem_formulation {
     unsigned probes_count;
 };
 
-void rfdtd_init_problem_formulation(struct rfdtd_problem_formulation* problem);
+void rfdtd_init_problem_formulation(struct rfdtd_problem_formulation *problem);
+
+void rfdtd_check_problem_formulation(
+        struct rfdtd_problem_formulation *problem,
+        struct rfdtd_error_stack *e);
 
 #endif

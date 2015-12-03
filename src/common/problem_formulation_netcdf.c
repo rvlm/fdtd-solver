@@ -81,6 +81,9 @@ struct rfdtd_problem_formulation *rfdtd_create_problem_formulation_from_netcdf(
     rfdtd_netcdf_getnumarray(ncid, "yee_z_Hx", yee->z_Hx, yee->nz_Hx, e); CHECK(e);
     rfdtd_netcdf_getnumarray(ncid, "yee_z_Hy", yee->z_Hy, yee->nz_Hy, e); CHECK(e);
     rfdtd_netcdf_getnumarray(ncid, "yee_z_Hz", yee->z_Hz, yee->nz_Hz, e); CHECK(e);
+
+    rfdtd_check_problem_formulation(result, e); CHECK(e);
+
     return result;
 
 e_check:

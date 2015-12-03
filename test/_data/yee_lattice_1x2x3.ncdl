@@ -2,23 +2,23 @@
 netcdf yee_lattice_2cells {
 dimensions:
     yee_nx_Ex = 1;
-    yee_nx_Ey = 3;
-    yee_nx_Ez = 4;
-    yee_ny_Ex = 2;
+    yee_nx_Ey = 2;
+    yee_nx_Ez = 2;
+    yee_ny_Ex = 3;
     yee_ny_Ey = 2;
-    yee_ny_Ez = 4;
-    yee_nz_Ex = 2;
-    yee_nz_Ey = 3;
+    yee_ny_Ez = 3;
+    yee_nz_Ex = 4;
+    yee_nz_Ey = 4;
     yee_nz_Ez = 3;
 
     yee_nx_Hx = 1;
-    yee_nx_Hy = 3;
-    yee_nx_Hz = 4;
-    yee_ny_Hx = 2;
+    yee_nx_Hy = 2;
+    yee_nx_Hz = 2;
+    yee_ny_Hx = 3;
     yee_ny_Hy = 2;
-    yee_ny_Hz = 4;
-    yee_nz_Hx = 2;
-    yee_nz_Hy = 3;
+    yee_ny_Hz = 3;
+    yee_nz_Hx = 4;
+    yee_nz_Hy = 4;
     yee_nz_Hz = 3;
 
 variables:
@@ -44,22 +44,22 @@ variables:
 
 data:
     yee_x_Ex = 0.5;
-    yee_y_Ex = 0.0, 1.0, 2.0;
-    yee_z_Ex = 0.0, 1.0, 2.0, 3.0;
     yee_x_Ey = 0.0, 1.0;
-    yee_y_Ey = 0.5, 1.5;
-    yee_z_Ey = 0.0, 1.0, 2.0, 3.0;
     yee_x_Ez = 0.0, 1.0;
+    yee_y_Ex = 0.0, 1.0, 2.0;
+    yee_y_Ey = 0.5, 1.5;
     yee_y_Ez = 0.0, 1.0, 2.0;
+    yee_z_Ex = 0.0, 1.0, 2.0, 3.0;
+    yee_z_Ey = 0.0, 1.0, 2.0, 3.0;
     yee_z_Ez = 0.5, 1.5, 2.5;
 
     yee_x_Hx = 1.0;
-    yee_y_Hx = 0.5, 1.5, 2.5;
-    yee_z_Hx = 0.5, 1.5, 2.5, 3.5;
     yee_x_Hy = 0.5, 1.5;
-    yee_y_Hy = 1.0, 2.0;
-    yee_z_Hy = 0.5, 1.5, 2.5, 3.5;
     yee_x_Hz = 0.5, 1.5;
+    yee_y_Hx = 0.5, 1.5, 2.5;
+    yee_y_Hy = 1.0, 2.0;
     yee_y_Hz = 0.5, 1.5, 2.5;
+    yee_z_Hx = 0.5, 1.5, 2.5, 3.5;
+    yee_z_Hy = 0.5, 1.5, 2.5, 3.5;
     yee_z_Hz = 1.0, 2.0, 3.0;
 }
