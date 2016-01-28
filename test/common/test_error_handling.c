@@ -1,4 +1,7 @@
-#include <CUnit/CUnit.h>
+#include <stddef.h>
+#include <stdarg.h>
+#include <setjmp.h>
+#include <cmocka.h>
 #include "rvlm/fdtd/common/error_handling.h"
 #include <rvlm/fdtd/common/internal_macros.h>
 
@@ -32,7 +35,9 @@ e_raise:
     return 0;
 }
 
-extern void test_error_handling_stack_indexing(void) {
+extern void test_error_handling_stack_indexing(void **state) {
+    (void)state;
+
     struct rfdtd_error_stack stack;
     struct rfdtd_error_stack *e = &stack;
     struct rfdtd_error_entry *entry;
@@ -40,26 +45,26 @@ extern void test_error_handling_stack_indexing(void) {
     int i;
 
     // The test cannot be run on smaller values.
-    CU_ASSERT_TRUE_FATAL(RFDTD_ERROR_STACK_CAPACITY >= 4);
+    assert_true(RFDTD_ERROR_STACK_CAPACITY >= 4);
 
     rfdtd_initialize_stack(e);
-    CU_ASSERT_EQUAL(e->count, 0);
-    CU_ASSERT_EQUAL(e->tip,   0);
+    assert_int_equal(e->count, 0);
+    assert_int_equal(e->tip,   0);
 
     rfdtd_push_error(e, NULL, 0, NULL, -1, "ERR-1");
-    CU_ASSERT_EQUAL(e->count, 1);
-    CU_ASSERT_EQUAL(e->tip,   1);
+    assert_int_equal(e->count, 1);
+    assert_int_equal(e->tip,   1);
 
     rfdtd_push_error(e, NULL, 0, NULL, -2, "ERR-2");
-    CU_ASSERT_EQUAL(e->count, 2);
-    CU_ASSERT_EQUAL(e->tip,   2);
+    assert_int_equal(e->count, 2);
+    assert_int_equal(e->tip,   2);
 
     for (i=0; i < RFDTD_ERROR_STACK_CAPACITY; ++i) {
         rfdtd_push_error(e, NULL, 0, NULL, i, "ERR-i");
     }
 
-    CU_ASSERT_EQUAL(e->count, RFDTD_ERROR_STACK_CAPACITY);
-    CU_ASSERT_EQUAL(e->tip,   3);
+    assert_int_equal(e->count, RFDTD_ERROR_STACK_CAPACITY);
+    assert_int_equal(e->tip,   3);
 
     for (i = 0; i < e->count; ++i) {
         entry = rfdtd_get_stack_entry(e, i);
@@ -67,58 +72,62 @@ extern void test_error_handling_stack_indexing(void) {
 
     for (i = 0; i < e->count-1; ++i) {
         entry = rfdtd_get_stack_entry(e, i);
-        CU_ASSERT_PTR_NOT_NULL_FATAL(entry);
-        CU_ASSERT_PTR_NOT_NULL_FATAL(entry->fmt);
-        CU_ASSERT_STRING_EQUAL(entry->fmt, "ERR-i");
-        CU_ASSERT_EQUAL(entry->code, RFDTD_ERROR_STACK_CAPACITY - i - 1);
+        assert_non_null(entry);
+        assert_non_null(entry->fmt);
+        assert_string_equal(entry->fmt, "ERR-i");
+        assert_int_equal((int)entry->code, RFDTD_ERROR_STACK_CAPACITY - i - 1);
     }
 
     entry = rfdtd_get_stack_entry(e, e->count - 1);
-    CU_ASSERT_STRING_EQUAL(entry->fmt, "ERR-1");
-    CU_ASSERT_EQUAL(entry->code, -1);
+    assert_string_equal(entry->fmt, "ERR-1");
+    assert_int_equal((int)entry->code, -1);
 
     // Try invalid stack indexes, too.
-    CU_ASSERT_PTR_NULL(rfdtd_get_stack_entry(e, -1));
-    CU_ASSERT_PTR_NULL(rfdtd_get_stack_entry(e, e->count));
+    assert_null(rfdtd_get_stack_entry(e, -1));
+    assert_null(rfdtd_get_stack_entry(e, e->count));
 }
 
-extern void test_error_handling_stack_works(void) {
+extern void test_error_handling_stack_works(void **state) {
+    (void)state;
+
     struct rfdtd_error_stack e;
     struct rfdtd_error_entry *entry;
     rfdtd_initialize_stack(&e);
     
-    CU_ASSERT_EQUAL(pseudo_sqrt( 1, &e), 1);
-    CU_ASSERT_EQUAL(e.tip,   0);
-    CU_ASSERT_EQUAL(e.count, 0);
+    assert_int_equal(pseudo_sqrt( 1, &e), 1);
+    assert_int_equal(e.tip,   0);
+    assert_int_equal(e.count, 0);
 
-    CU_ASSERT_EQUAL(pseudo_sqrt(-1, &e), 0);
-    CU_ASSERT_EQUAL(e.tip,   1);
-    CU_ASSERT_EQUAL(e.count, 1);
+    assert_int_equal(pseudo_sqrt(-1, &e), 0);
+    assert_int_equal(e.tip,   1);
+    assert_int_equal(e.count, 1);
 
     entry = rfdtd_get_stack_entry(&e, 0);
-    CU_ASSERT_STRING_EQUAL(entry->file, __FILE__);
-    CU_ASSERT_STRING_EQUAL(entry->expr, "<NONE>");
-    CU_ASSERT_STRING_EQUAL(entry->fmt,  "Root of negative value x={iArg}");
-    CU_ASSERT_STRING_EQUAL(entry->msg,  "Root of negative value x=-1");
+    assert_string_equal(entry->file, __FILE__);
+    assert_string_equal(entry->expr, "<NONE>");
+    assert_string_equal(entry->fmt,  "Root of negative value x={iArg}");
+    assert_string_equal(entry->msg,  "Root of negative value x=-1");
 }
 
-extern void test_error_handling_stack_works_2(void) {
+extern void test_error_handling_stack_works_2(void **state) {
+    (void)state;
+
     struct rfdtd_error_stack e;
     struct rfdtd_error_entry *entry;
     rfdtd_initialize_stack(&e);
 
-    CU_ASSERT_EQUAL(pseudo_sqrt_2( 1, &e), 1);
-    CU_ASSERT_EQUAL(e.tip,   0);
-    CU_ASSERT_EQUAL(e.count, 0);
+    assert_int_equal(pseudo_sqrt_2( 1, &e), 1);
+    assert_int_equal(e.tip,   0);
+    assert_int_equal(e.count, 0);
 
-    CU_ASSERT_EQUAL(pseudo_sqrt_2(-1, &e), 0);
-    CU_ASSERT_EQUAL(e.tip,   1);
-    CU_ASSERT_EQUAL(e.count, 1);
+    assert_int_equal(pseudo_sqrt_2(-1, &e), 0);
+    assert_int_equal(e.tip,   1);
+    assert_int_equal(e.count, 1);
 
     entry = rfdtd_get_stack_entry(&e, 0);
-    CU_ASSERT_STRING_EQUAL(entry->file, __FILE__);
-    CU_ASSERT_STRING_EQUAL(entry->expr, "x >= 0");
-    CU_ASSERT_STRING_EQUAL(entry->fmt,  "Root of negative value x={iArg}");
-    CU_ASSERT_STRING_EQUAL(entry->msg,  "Root of negative value x=-1");
+    assert_string_equal(entry->file, __FILE__);
+    assert_string_equal(entry->expr, "x >= 0");
+    assert_string_equal(entry->fmt,  "Root of negative value x={iArg}");
+    assert_string_equal(entry->msg,  "Root of negative value x=-1");
 }
 

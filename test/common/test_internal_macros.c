@@ -1,8 +1,12 @@
-#include <CUnit/CUnit.h>
+#include <stddef.h>
+#include <stdarg.h>
+#include <setjmp.h>
+#include <cmocka.h>
 #include "rvlm/fdtd/common/error_handling.h"
 #include "rvlm/fdtd/common/internal_macros.h"
 
-extern void test_internal_macros_new_and_dispose(void) {
+extern void test_internal_macros_new_and_dispose(void **state) {
+    (void)state;
 
     struct stupid_struct {
         double a;
@@ -24,10 +28,10 @@ extern void test_internal_macros_new_and_dispose(void) {
     NEW_ARRAY(cs, 10);
     NEW_ARRAY(ss, 10);
 
-    CU_ASSERT_PTR_NOT_NULL(fs);
-    CU_ASSERT_PTR_NOT_NULL(vs);
-    CU_ASSERT_PTR_NOT_NULL(cs);
-    CU_ASSERT_PTR_NOT_NULL(ss);
+    assert_non_null(fs);
+    assert_non_null(vs);
+    assert_non_null(cs);
+    assert_non_null(ss);
 
 e_memory:
     DISPOSE(ss);
@@ -35,8 +39,8 @@ e_memory:
     DISPOSE(vs);
     DISPOSE(fs);
 
-    CU_ASSERT_PTR_NULL(fs);
-    CU_ASSERT_PTR_NULL(vs);
-    CU_ASSERT_PTR_NULL(cs);
-    CU_ASSERT_PTR_NULL(ss);
+    assert_null(fs);
+    assert_null(vs);
+    assert_null(cs);
+    assert_null(ss);
 }

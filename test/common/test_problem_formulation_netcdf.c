@@ -1,4 +1,7 @@
-#include <CUnit/CUnit.h>
+#include <stddef.h>
+#include <stdarg.h>
+#include <setjmp.h>
+#include <cmocka.h>
 #include <rvlm/fdtd/common/internal_macros.h>
 #include "rvlm/fdtd/common/problem_formulation_netcdf.h"
 #include "rvlm/fdtd/test_config.h"
@@ -8,7 +11,7 @@ static void assert_all_equal(
 
     size_t i;
     for (i = 0; i < count; ++i)
-        CU_ASSERT_EQUAL(buf[i], val);
+        assert_int_equal(buf[i], val);
 }
 
 extern void test_problem_formulation_netcdf_lattice_1x2x3(void) {
@@ -22,8 +25,8 @@ extern void test_problem_formulation_netcdf_lattice_1x2x3(void) {
     struct rfdtd_problem_formulation *problem;
 
     problem = rfdtd_create_problem_formulation_from_netcdf(filename, e);
-    CU_ASSERT_EQUAL(e->count, 0);
-    CU_ASSERT_PTR_NOT_NULL_FATAL(problem);
+    assert_int_equal(e->count, 0);
+    assert_non_null(problem);
 
     // Should definitely fit.
     rfdtd_number_t buf[32];
@@ -76,5 +79,5 @@ extern void test_problem_formulation_netcdf_lattice_1x2x3(void) {
     return;
 
 e_check:
-    CU_FAIL_FATAL("Shouldn't get here");
+    fail();
 }

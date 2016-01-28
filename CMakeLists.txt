@@ -103,7 +103,7 @@ target_link_libraries(rvlmfdtd ${NETCDF_LIBRARIES})
 # -- unit tests --
 if(RFDTD_CONFIG_UNIT_TESTS)
     find_package(PythonInterp REQUIRED)
-    find_package(CUnit REQUIRED)
+    find_package(CMocka       REQUIRED)
     find_program(NCGEN_EXECUTABLE ncgen)
     enable_testing()
 
@@ -113,7 +113,8 @@ if(RFDTD_CONFIG_UNIT_TESTS)
 
     include_directories(
         "${S}/include"
-        "${B}/include")
+        "${B}/include"
+        "${CMOCKA_INCLUDE_DIR}")
 
     add_executable(rvlmfdtd-test
         "${B}/include/generated-tests.h"
@@ -124,7 +125,7 @@ if(RFDTD_CONFIG_UNIT_TESTS)
         "${S}/test/common/test_internal_macros.c"
         "${S}/test/common/test_memory_allocation.c"
         "${S}/test/common/test_problem_formulation_netcdf.c"
-        "${S}/test/main_cunit.c"
+        "${S}/test/main_cmocka.c"
         "${S}/test/test_config.h.in")
 
     add_custom_command(
@@ -154,7 +155,7 @@ if(RFDTD_CONFIG_UNIT_TESTS)
                               ${TEST_SOURCES}
         COMMENT "Generating CUnit registry header file")
 
-    target_link_libraries(rvlmfdtd-test rvlmfdtd ${CUNIT_LIBRARIES})
+    target_link_libraries(rvlmfdtd-test rvlmfdtd "${CMOCKA_LIBRARY}")
 
     if (RFDTD_CONFIG_VALGRIND)
     add_test(rvlmfdtd-test valgrind ./rvlmfdtd-test)
