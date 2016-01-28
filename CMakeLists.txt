@@ -8,7 +8,7 @@ set(S "${CMAKE_CURRENT_SOURCE_DIR}")
 set(B "${CMAKE_CURRENT_BINARY_DIR}")
 
 # Thirdparty libraries lookup.
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${S}")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${S}/cmake")
 find_package(NetCDF REQUIRED)
 find_package(OpenCL REQUIRED)
 
