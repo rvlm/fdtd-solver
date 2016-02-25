@@ -118,12 +118,15 @@ if(RFDTD_CONFIG_UNIT_TESTS)
 
     add_executable(rvlmfdtd-test
         "${B}/include/generated-tests.h"
+        "${B}/test/generated-resources.c"
         "${B}/test/_data/yee_lattice_1x2x2.nc"
+        "${S}/test/_data/random5k.dat"
         "${S}/generate_test_registry.py"
 	    "${S}/test/common/test_string_format.c"
 	    "${S}/test/common/test_error_handling.c"
         "${S}/test/common/test_internal_macros.c"
         "${S}/test/common/test_memory_allocation.c"
+        "${S}/test/common/test_resource_generation.c"
         "${S}/test/common/test_problem_formulation_netcdf.c"
         "${S}/test/main_cmocka.c"
         "${S}/test/test_config.h.in")
@@ -135,6 +138,17 @@ if(RFDTD_CONFIG_UNIT_TESTS)
                     -o "${B}/test/_data/yee_lattice_1x2x3.nc"
                        "${S}/test/_data/yee_lattice_1x2x3.ncdl"
         COMMENT "Generating NetCDF files for unit tests")
+
+    add_custom_command(
+        OUTPUT  "${B}/test/generated-resources.c"
+        DEPENDS "${S}/generate_resource_file.py"
+                "${S}/test/_data/random5k.dat"
+        COMMAND "${PYTHON_EXECUTABLE}"
+                "${S}/generate_resource_file.py"
+                    --prefix "rfdtd_test"
+                    --output "${B}/test/generated-resources.c"
+                "${S}/test/_data/random5k.dat"
+        COMMENT "Generating test resource file")
 
     # Gather all '*.c' files from 'rvlmfdtd-test' target into TEST_SOURCES.
     get_target_property(TEST_SOURCES_TMP rvlmfdtd-test SOURCES)
