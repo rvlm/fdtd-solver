@@ -166,8 +166,8 @@ if(RFDTD_CONFIG_UNIT_TESTS)
         COMMAND "${PYTHON_EXECUTABLE}"
                 "${S}/generate_test_registry.py"
                     --output "${B}/include/generated-tests.h"
-                              ${TEST_SOURCES}
-        COMMENT "Generating CUnit registry header file")
+                ${TEST_SOURCES}
+        COMMENT "Generating CMocka registry header file")
 
     target_link_libraries(rvlmfdtd-test rvlmfdtd "${CMOCKA_LIBRARY}")
 
