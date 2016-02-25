@@ -67,7 +67,8 @@ for fileName in testFiles:
     suiteTests = []
     with open(fileName, mode="r") as f:
 
-        r = re.compile(r"^extern\s+(void|int)\s+(%s_(\w[\w\d]*))\s*\(\s*void\s+\*\s*\*\s*\w[\w\d]*\)" % suiteName)
+        r = re.compile((r"^extern\s+(void|int)\s+(%s_(\w[\w\d]*))\s*\(\s*" +
+                        r"void\s+\*\s*\*\s*\w[\w\d]*\)") % suiteName)
         for s in f:
             m = r.match(s)
             if m is None:
@@ -88,7 +89,8 @@ for fileName in testFiles:
 
     if (suiteInit is None and suiteClean is not None) or \
        (suiteInit is not None and suiteClean is None):
-        sys.stderr.write("warning: init and cleanup functions must be both defined or both not\n")
+        sys.stderr.write("warning: init and cleanup functions must be both " +
+                         "defined or both not\n")
         continue
 
     registry.append((suiteName, suiteInit, suiteClean, suiteTests))
