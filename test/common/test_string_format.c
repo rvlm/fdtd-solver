@@ -61,6 +61,8 @@ extern void test_string_format_copy_string(void **state) {
 }
 
 extern void test_string_format_substitute_placeholders(void **state) {
+    (void)state;
+
     const char *args[] = { "sA=Ein", "sB=Zwei", "sC=Drei" };
     const int N = 128;
     char buf[N];
