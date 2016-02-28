@@ -23,7 +23,7 @@ if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
 
     # These are the prefered GCC options for *developer* environment. They try
     # to enable as much of useful warnings as possible while trying to keep
-    # “signal-noise” ration in compiler output still acceptable. Please ensure
+    # “signal-noise” ratio in compiler output still acceptable. Please ensure
     # that your code builds with these settings without warnings BEFORE merging
     # it into master branch.
     # Originally taken from http://stackoverflow.com/a/1667114/1447225.
