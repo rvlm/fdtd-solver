@@ -121,7 +121,7 @@ if(RFDTD_CONFIG_UNIT_TESTS)
         "${B}/test/generated-resources.c"
         "${B}/test/_data/yee_lattice_1x2x2.nc"
         "${S}/test/_data/random5k.dat"
-        "${S}/generate_test_registry.py"
+        "${S}/tools/generate_test_registry.py"
 	    "${S}/test/common/test_string_format.c"
 	    "${S}/test/common/test_error_handling.c"
         "${S}/test/common/test_internal_macros.c"
@@ -141,10 +141,10 @@ if(RFDTD_CONFIG_UNIT_TESTS)
 
     add_custom_command(
         OUTPUT  "${B}/test/generated-resources.c"
-        DEPENDS "${S}/generate_resource_file.py"
+        DEPENDS "${S}/tools/generate_resource_file.py"
                 "${S}/test/_data/random5k.dat"
         COMMAND "${PYTHON_EXECUTABLE}"
-                "${S}/generate_resource_file.py"
+                "${S}/tools/generate_resource_file.py"
                     --prefix "rfdtd_test"
                     --output "${B}/test/generated-resources.c"
                 "${S}/test/_data/random5k.dat"
@@ -162,9 +162,9 @@ if(RFDTD_CONFIG_UNIT_TESTS)
 
     add_custom_command(
         OUTPUT  "${B}/include/generated-tests.h"
-        DEPENDS "${S}/generate_test_registry.py" ${TEST_SOURCES}
+        DEPENDS "${S}/tools/generate_test_registry.py" ${TEST_SOURCES}
         COMMAND "${PYTHON_EXECUTABLE}"
-                "${S}/generate_test_registry.py"
+                "${S}/tools/generate_test_registry.py"
                     --output "${B}/include/generated-tests.h"
                 ${TEST_SOURCES}
         COMMENT "Generating CMocka registry header file")
